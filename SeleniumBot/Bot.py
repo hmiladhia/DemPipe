@@ -36,7 +36,7 @@ class Bot:
         self.driver.quit()
 
     def execute_action(self, action: Action, *args, **kwargs):
-        assert type(action) == Action
+        assert isinstance(action, Action)
         wait_time = 0.2
 
         if action == Action.Get:
@@ -53,7 +53,7 @@ class Bot:
     def execute(self, *args):
         selenium_actions = []
         for arg in args:
-            if hasattr(arg, '__iter__'):
+            if not isinstance(arg, tuple) and hasattr(arg, '__iter__'):
                 selenium_actions.extend(arg)
             else:
                 selenium_actions.append(arg)
@@ -85,7 +85,7 @@ class Bot:
 
 
 if __name__ == "__main__":
-    bot = Bot('***REMOVED***')
+    bot = Bot(r'***REMOVED***')
     try:
         actions = [(Action.Get, r"***REMOVED***"),
                    (Action.Click, r'//*[@id="u_0_7"]')]
