@@ -5,7 +5,7 @@ from SeleniumBot import Action
 
 
 class Bot:
-    def __init__(self, starting_url="", driver=None, options=None):
+    def __init__(self, default_url=None, driver=None, options=None):
         if options is None:
             options = webdriver.ChromeOptions()
             options.add_argument("--incognito")
@@ -16,11 +16,11 @@ class Bot:
             driver = webdriver.Chrome(options=options)
 
         self.driver = driver
-        self.starting_url = starting_url
+        self.default_url = default_url
 
     def get(self, url=None):
         if not url:
-            url = self.starting_url
+            url = self.default_url
         self.driver.get(url)
 
     def find_by_xpath(self, xpath):
@@ -30,18 +30,34 @@ class Bot:
         self.find_by_xpath(xpath).click()
         time.sleep(0.5)
 
-    def execute_action(self, action, **kwargs):
+    def execute_action(self, action: Action, *args, **kwargs):
         assert type(action) == Action
         wait_time = 0.2
 
         if action == Action.Get:
-            self.get(kwargs.get('url'))
+            self.get(*args, **kwargs)
             wait_time = 1
         elif action == Action.Click:
-            self.click(kwargs['xpath'])
+            self.click(*args, **kwargs)
         else:
             return
         time.sleep(wait_time)
+
+    def execute(self, selenium_actions: list, *args):
+        for arg in args:
+            selenium_actions.extend(arg)
+
+        for action in selenium_actions:
+            print(type(action))
+            action_type = action[0]
+            options = action[1]
+            if type(options) == dict:
+                print(options)
+                self.execute_action(action_type, **options)
+            elif type(options) == list:
+                self.execute_action(action_type, *options)
+            else:
+                self.execute_action(action_type, options)
 
     # Abstract
     def handle(self, event):
@@ -50,4 +66,6 @@ class Bot:
 
 if __name__ == "__main__":
     bot = Bot('***REMOVED***')
-    bot.execute_action(Action.Get, url=None)
+    # actions = [(Action.Get, {"url": r"https://twitter.com/login?lang=fr"})]
+    actions = [(Action.Get, r"***REMOVED***"), (Action.Click, r'//*[@id="u_0_7"]')]
+    bot.execute(actions)
