@@ -32,6 +32,9 @@ class Bot:
         self.find_by_xpath(xpath).click()
         time.sleep(0.5)
 
+    def quit(self):
+        self.driver.quit()
+
     def execute_action(self, action: Action, *args, **kwargs):
         assert type(action) == Action
         wait_time = 0.2
@@ -41,6 +44,8 @@ class Bot:
             wait_time = 1
         elif action == Action.Click:
             self.click(*args, **kwargs)
+        elif action == Action.Quit:
+            self.quit()
         else:
             return
         time.sleep(wait_time)
@@ -50,7 +55,6 @@ class Bot:
             selenium_actions.extend(arg)
 
         for action in selenium_actions:
-            print(type(action))
             action_type = action[0]
             options = action[1]
             if type(options) == dict:
@@ -71,3 +75,6 @@ if __name__ == "__main__":
     # actions = [(Action.Get, {"url": r"https://twitter.com/login?lang=fr"})]
     actions = [(Action.Get, r"***REMOVED***"), (Action.Click, r'//*[@id="u_0_7"]')]
     bot.execute(actions)
+    print("Going to quit")
+    time.sleep(1)
+    bot.quit()
