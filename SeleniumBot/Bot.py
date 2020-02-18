@@ -13,7 +13,9 @@ class Bot:
             # options.add_argument('--disable-gpu')
 
         if driver is None:
-            driver = webdriver.Chrome(options=options)
+            from os.path import abspath, dirname, join
+            driver = webdriver.Chrome(executable_path=join(dirname(abspath(__file__)), "chromedriver.exe"),
+                                      options=options)
 
         self.driver = driver
         self.default_url = default_url
