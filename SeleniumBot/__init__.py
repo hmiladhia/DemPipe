@@ -4,4 +4,5 @@ from enum import Enum
 class Action(Enum):
     Get = 0
     Click = 1
-    Quit = 2
+    SendKeys = 2
+    Quit = -1

@@ -32,18 +32,24 @@ class Bot:
         self.find_by_xpath(xpath).click()
         time.sleep(0.5)
 
+    def send_keys(self, xpath, text):
+        self.find_by_xpath(xpath).send_keys(text)
+        time.sleep(0.5)
+
     def quit(self):
         self.driver.quit()
 
     def execute_action(self, action: Action, *args, **kwargs):
         assert isinstance(action, Action)
-        wait_time = 0.2
+        wait_time = 0.5
 
         if action == Action.Get:
             self.get(*args, **kwargs)
             wait_time = 1
         elif action == Action.Click:
             self.click(*args, **kwargs)
+        elif action == Action.SendKeys:
+            self.send_keys(*args, **kwargs)
         elif action == Action.Quit:
             self.quit()
         else:
@@ -88,7 +94,10 @@ if __name__ == "__main__":
     bot = Bot(r'***REMOVED***')
     try:
         actions = [(Action.Get, r"***REMOVED***"),
-                   (Action.Click, r'//*[@id="u_0_7"]')]
+                   (Action.Click, r'//*[@id="u_0_7"]'),
+                   (Action.SendKeys, [r'//*[@id="email"]', "test@gmail.com"]),
+                   (Action.SendKeys, r'//*[@id="pass"]', "mypassword")]
         bot.execute(actions)
     finally:
+        time.sleep(3)
         bot.execute(Action.Quit)
