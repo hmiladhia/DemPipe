@@ -8,6 +8,8 @@ class Bot:
         if options is None:
             options = webdriver.ChromeOptions()
             options.add_argument("--incognito")
+            # options.add_argument('--headless')
+            # options.add_argument('--disable-gpu')  # Last I checked this was necessary.
 
         if driver is None:
             driver = webdriver.Chrome(options=options)
