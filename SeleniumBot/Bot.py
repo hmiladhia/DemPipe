@@ -50,13 +50,27 @@ class Bot:
             return
         time.sleep(wait_time)
 
-    def execute(self, selenium_actions: list, *args):
+    def execute(self, *args):
+        selenium_actions = []
         for arg in args:
-            selenium_actions.extend(arg)
+            if hasattr(arg, '__iter__'):
+                selenium_actions.extend(arg)
+            else:
+                selenium_actions.append(arg)
 
         for action in selenium_actions:
-            action_type = action[0]
-            options = action[1]
+            options = []
+            if type(action) == Action:
+                action_type = action
+            elif hasattr(action, '__len__') and len(action) == 2:
+                action_type = action[0]
+                options = action[1]
+            elif hasattr(action, '__len__') and len(action) > 0:
+                action_type = action[0]
+                options = list(action[1:])
+            else:
+                raise ValueError("Action doesn't fit any format")
+
             if type(options) == dict:
                 print(options)
                 self.execute_action(action_type, **options)
@@ -72,9 +86,9 @@ class Bot:
 
 if __name__ == "__main__":
     bot = Bot('***REMOVED***')
-    # actions = [(Action.Get, {"url": r"https://twitter.com/login?lang=fr"})]
-    actions = [(Action.Get, r"***REMOVED***"), (Action.Click, r'//*[@id="u_0_7"]')]
-    bot.execute(actions)
-    print("Going to quit")
-    time.sleep(1)
-    bot.quit()
+    try:
+        actions = [(Action.Get, r"***REMOVED***"),
+                   (Action.Click, r'//*[@id="u_0_7"]')]
+        bot.execute(actions)
+    finally:
+        bot.execute(Action.Quit)
