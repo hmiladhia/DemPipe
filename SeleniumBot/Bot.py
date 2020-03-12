@@ -1,11 +1,15 @@
 import time
+
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 from SeleniumBot import Action
 
 
 class Bot:
-    def __init__(self, default_url=None, driver=None, options=None):
+    def __init__(self, default_url=None, driver=None, options=None, wait=5):
         if options is None:
             options = webdriver.ChromeOptions()
             options.add_argument("--incognito")
@@ -18,6 +22,7 @@ class Bot:
                                       options=options)
 
         self.driver = driver
+        self.wait = WebDriverWait(driver, wait)
         self.default_url = default_url
 
     def get(self, url=None):
@@ -28,8 +33,11 @@ class Bot:
     def find_by_xpath(self, xpath):
         return self.driver.find_element_by_xpath(xpath)
 
-    def click(self, xpath):
-        self.find_by_xpath(xpath).click()
+    def click(self, xpath, by=None):
+        if by is None:
+            by = By.XPATH
+        element = self.wait.until(EC.element_to_be_clickable((by, xpath)))
+        element.click()
         time.sleep(0.5)
 
     def send_keys(self, xpath, text):
