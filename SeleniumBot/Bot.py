@@ -36,6 +36,9 @@ class Bot:
         self.find_by_xpath(xpath).send_keys(text)
         time.sleep(0.5)
 
+    def screen_shot(self, path):
+        self.driver.save_screenshot(path)
+
     def quit(self):
         self.driver.quit()
 
@@ -50,6 +53,8 @@ class Bot:
             self.click(*args, **kwargs)
         elif action == Action.SendKeys:
             self.send_keys(*args, **kwargs)
+        elif action == Action.ScreenShot:
+            self.screen_shot(*args, **kwargs)
         elif action == Action.Quit:
             self.quit()
         else:
@@ -78,14 +83,12 @@ class Bot:
                 raise ValueError("Action doesn't fit any format")
 
             if type(options) == dict:
-                print(options)
                 self.execute_action(action_type, **options)
             elif type(options) == list:
                 self.execute_action(action_type, *options)
             else:
                 self.execute_action(action_type, options)
 
-    # Abstract
     def handle(self, event):
         pass
 
