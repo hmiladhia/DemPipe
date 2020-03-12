@@ -1,6 +1,7 @@
 .idea
 venv
 *.pyc
+*.local.*
 
 #Ignore thumbnails created by Windows
 Thumbs.db
