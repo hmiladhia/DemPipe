@@ -55,6 +55,13 @@ class Bot:
             self.send_keys(*args, **kwargs)
         elif action == Action.ScreenShot:
             self.screen_shot(*args, **kwargs)
+        elif action == Action.Custom:
+            if 'callback' in kwargs:
+                callback = kwargs.pop('callback')
+            else:
+                callback = args[0]
+                args = args[1:]
+            callback(*args, **kwargs)
         elif action == Action.Quit:
             self.quit()
         else:

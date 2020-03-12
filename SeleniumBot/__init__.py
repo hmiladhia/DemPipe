@@ -7,3 +7,4 @@ class Action(Enum):
     SendKeys = 2
     ScreenShot = 3
     Quit = -1
+    Custom = -2
