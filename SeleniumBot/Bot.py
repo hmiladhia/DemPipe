@@ -1,24 +1,28 @@
 import time
+
+from os.path import abspath, dirname, join
+
 from selenium import webdriver
 
 from SeleniumBot import Action
 
 
 class Bot:
-    def __init__(self, default_url=None, driver=None, options=None):
+    def __init__(self, default_url=None, driver_path=None, options=None):
         if options is None:
-            options = webdriver.ChromeOptions()
-            options.add_argument("--incognito")
+            self.options = webdriver.ChromeOptions()
+            self.options.add_argument("--incognito")
             # options.add_argument('--headless')
             # options.add_argument('--disable-gpu')
-
-        if driver is None:
-            from os.path import abspath, dirname, join
-            driver = webdriver.Chrome(executable_path=join(dirname(abspath(__file__)), "chromedriver.exe"),
-                                      options=options)
-
-        self.driver = driver
+        self.driver_path = driver_path or join(dirname(abspath(__file__)))
+        self.driver = None
         self.default_url = default_url
+
+    def __enter__(self):
+        self.driver = webdriver.Chrome(executable_path=self.driver_path, options=self.options)
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.quit()
 
     def get(self, url=None):
         if not url:
@@ -55,6 +59,13 @@ class Bot:
             self.send_keys(*args, **kwargs)
         elif action == Action.ScreenShot:
             self.screen_shot(*args, **kwargs)
+        elif action == Action.Custom:
+            if 'callback' in kwargs:
+                callback = kwargs.pop('callback')
+            else:
+                callback = args[0]
+                args = args[1:]
+            callback(*args, **kwargs)
         elif action == Action.Quit:
             self.quit()
         else:
@@ -91,16 +102,3 @@ class Bot:
 
     def handle(self, event):
         pass
-
-
-if __name__ == "__main__":
-    bot = Bot(r'***REMOVED***')
-    try:
-        actions = [(Action.Get, r"***REMOVED***"),
-                   (Action.Click, r'//*[@id="u_0_7"]'),
-                   (Action.SendKeys, [r'//*[@id="email"]', "test@gmail.com"]),
-                   (Action.SendKeys, r'//*[@id="pass"]', "mypassword")]
-        bot.execute(actions)
-    finally:
-        time.sleep(3)
-        bot.execute(Action.Quit)
