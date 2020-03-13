@@ -14,12 +14,15 @@ class Bot:
             self.options.add_argument("--incognito")
             # options.add_argument('--headless')
             # options.add_argument('--disable-gpu')
-        self.driver_path = driver_path or join(dirname(abspath(__file__)))
+        else:
+            self.options = options
+        self.driver_path = driver_path or join(dirname(abspath(__file__)), 'chromedriver.exe')
         self.driver = None
         self.default_url = default_url
 
     def __enter__(self):
         self.driver = webdriver.Chrome(executable_path=self.driver_path, options=self.options)
+        return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.quit()
@@ -46,13 +49,12 @@ class Bot:
     def quit(self):
         self.driver.quit()
 
-    def execute_action(self, action: Action, *args, **kwargs):
+    def execute_action(self, action: Action, *args, _wait_time=None, **kwargs):
         assert isinstance(action, Action)
-        wait_time = 0.5
+        wait_time = _wait_time or 0.5
 
         if action == Action.Get:
             self.get(*args, **kwargs)
-            wait_time = 1
         elif action == Action.Click:
             self.click(*args, **kwargs)
         elif action == Action.SendKeys:
@@ -72,7 +74,7 @@ class Bot:
             return
         time.sleep(wait_time)
 
-    def execute(self, *args):
+    def execute(self, *args, _wait_time=None):
         selenium_actions = []
         for arg in args:
             if not isinstance(arg, tuple) and hasattr(arg, '__iter__'):
@@ -94,11 +96,11 @@ class Bot:
                 raise ValueError("Action doesn't fit any format")
 
             if type(options) == dict:
-                self.execute_action(action_type, **options)
+                self.execute_action(action_type, **options, _wait_time=_wait_time)
             elif type(options) == list:
-                self.execute_action(action_type, *options)
+                self.execute_action(action_type, *options, _wait_time=_wait_time)
             else:
-                self.execute_action(action_type, options)
+                self.execute_action(action_type, options, _wait_time=_wait_time)
 
     def handle(self, event):
         pass
