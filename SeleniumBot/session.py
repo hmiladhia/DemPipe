@@ -17,6 +17,8 @@ class SeleniumSession(MutableMapping):
         return self._memory or dict()
 
     def __call__(self, **s_kwargs):
+        s_kwargs = {key: self[value] for key, value in s_kwargs.items()}
+
         def decorator(function):
             @functools.wraps(function)
             def wrapper(*args, **kwargs):
@@ -52,7 +54,7 @@ class SeleniumSession(MutableMapping):
         def decorator(function):
             @functools.wraps(function)
             def wrapper(*args, **kwargs):
-                session_decorator = getattr(args[0], _session_name)(*s_kwargs)
+                session_decorator = getattr(args[0], _session_name)(**s_kwargs)
                 func = session_decorator(function)
                 return func(*args, **kwargs)
             return wrapper
