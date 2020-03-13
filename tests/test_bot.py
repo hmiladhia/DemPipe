@@ -5,21 +5,30 @@ Credits : htmlcheatsheet was taken from Traversy Media tutorial that you can fin
 import os
 
 import pytest
-import selenium
 
+from selenium import webdriver
 from SeleniumBot.Bot import Action, Bot
+from SeleniumBot.session import session_context
 
 
 class CheatSheetBot(Bot):
     def __init__(self, driver=None, options=None):
         if options is None:
-            options = selenium.webdriver.ChromeOptions()
+            options = webdriver.ChromeOptions()
             options.add_argument("--incognito")
             options.add_argument('--headless')
         super(CheatSheetBot, self).__init__(f'file:///{os.getcwd()}/htmlcheatsheet/index.html', driver, options)
 
-    def my_custom(self, arg1):
-        print(f'Hello {arg1}')
+    @session_context()
+    def my_custom(self, arg1=None, _last=None):
+        arg = arg1 or _last
+        print(f'{arg}')
+        return arg
+
+    @session_context()
+    def print_session(self):
+        print(self.session.to_dict())
+        return self.session['_']
 
 
 @pytest.fixture(scope='session', autouse=True)
@@ -43,3 +52,19 @@ def test_execute(actions, bot):
 def test_execute_with_two_actions(bot):
     actions = [Action.Get, (Action.SendKeys, "/html/body/form/div[4]/textarea", "Hello World")]
     bot.execute(actions, actions, _wait_time=0)
+
+
+@pytest.mark.parametrize('actions, expected', [
+    ('[Action.Get, (Action.Custom, bot.my_custom, "Hello World")]', "Hello World"),
+    ('[Action.Get, (Action.Custom, bot.my_custom)]', f'file:///{os.getcwd()}/htmlcheatsheet/index.html'),
+
+])
+def test_session_last(bot, actions, expected):
+    result = bot.execute(eval(actions), _wait_time=0)
+    assert result == expected
+
+
+def test_print_session(bot):
+    actions = [Action.Get, (Action.Custom, bot.print_session)]
+    result = bot.execute(actions, _wait_time=0)
+    assert result == bot.default_url
