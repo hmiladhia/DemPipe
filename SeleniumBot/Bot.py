@@ -37,11 +37,9 @@ class Bot:
 
     def click(self, xpath):
         self.find_by_xpath(xpath).click()
-        time.sleep(0.5)
 
     def send_keys(self, xpath, text):
         self.find_by_xpath(xpath).send_keys(text)
-        time.sleep(0.5)
 
     def screen_shot(self, path):
         self.driver.save_screenshot(path)
