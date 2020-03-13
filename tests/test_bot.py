@@ -8,7 +8,7 @@ import pytest
 
 from selenium import webdriver
 from SeleniumBot.Bot import Action, Bot
-from SeleniumBot.session import session_context
+from SeleniumBot.session import SeleniumSession
 
 
 class CheatSheetBot(Bot):
@@ -19,13 +19,13 @@ class CheatSheetBot(Bot):
             options.add_argument('--headless')
         super(CheatSheetBot, self).__init__(f'file:///{os.getcwd()}/htmlcheatsheet/index.html', driver, options)
 
-    @session_context()
+    @SeleniumSession.session_context()
     def my_custom(self, arg1=None, _last=None):
         arg = arg1 or _last
         print(f'{arg}')
         return arg
 
-    @session_context()
+    @SeleniumSession.session_context()
     def print_session(self):
         print(self.session.to_dict())
         return self.session['_']
@@ -46,12 +46,12 @@ def bot():
     [Action.Get, (Action.SendKeys, "/html/body/form/div[4]/textarea", "Hello World")],
 ])
 def test_execute(actions, bot):
-    bot.execute(actions, _wait_time=0)
+    bot.execute(actions)
 
 
 def test_execute_with_two_actions(bot):
     actions = [Action.Get, (Action.SendKeys, "/html/body/form/div[4]/textarea", "Hello World")]
-    bot.execute(actions, actions, _wait_time=0)
+    bot.execute(actions, actions)
 
 
 @pytest.mark.parametrize('actions, expected', [
@@ -60,11 +60,11 @@ def test_execute_with_two_actions(bot):
 
 ])
 def test_session_last(bot, actions, expected):
-    result = bot.execute(eval(actions), _wait_time=0)
+    result = bot.execute(eval(actions))
     assert result == expected
 
 
 def test_print_session(bot):
     actions = [Action.Get, (Action.Custom, bot.print_session)]
-    result = bot.execute(actions, _wait_time=0)
+    result = bot.execute(actions)
     assert result == bot.default_url

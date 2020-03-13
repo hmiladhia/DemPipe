@@ -8,3 +8,4 @@ class Action(Enum):
     ScreenShot = 3
     Quit = -1
     Custom = -2
+    Wait = -3

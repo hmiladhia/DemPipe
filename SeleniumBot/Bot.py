@@ -1,11 +1,10 @@
-import time
-
 from os.path import abspath, dirname, join
+from random import random
 
 from selenium import webdriver
 
 from SeleniumBot import Action
-from SeleniumBot.session import SeleniumSession, session_context
+from SeleniumBot.session import SeleniumSession
 
 
 class Bot:
@@ -31,59 +30,64 @@ class Bot:
         self.quit()
         self.session.quit()
 
-    @session_context()
+    @SeleniumSession.session_context()
     def get(self, url=None):
         url = url or self.default_url
         self.driver.get(url)
         return url
 
-    @session_context()
+    @SeleniumSession.session_context()
     def find_by_xpath(self, xpath):
         return self.driver.find_element_by_xpath(xpath)
 
-    @session_context()
+    @SeleniumSession.session_context()
     def click(self, xpath, _last=None):
         self.find_by_xpath(xpath).click()
         return _last
 
-    @session_context()
+    @SeleniumSession.session_context()
     def send_keys(self, xpath, text, _last=None):
         self.find_by_xpath(xpath).send_keys(text)
         return None
 
-    @session_context()
+    @SeleniumSession.session_context()
     def screen_shot(self, path):
         self.driver.save_screenshot(path)
         return path
 
-    @session_context()
+    @SeleniumSession.session_context()
+    def wait(self, time=None, _last=None):
+        time.sleep(time or random())
+        return _last
+
+    @SeleniumSession.session_context()
     def quit(self):
         return self.driver.quit()
 
-    def execute_action(self, action: Action, *args, _wait_time=None, **kwargs):
+    def execute_action(self, action: Action, *args, **kwargs):
         assert isinstance(action, Action)
-        wait_time = _wait_time or 0.5
 
         if action == Action.Get:
-            self.get(*args, **kwargs)
+            return self.get(*args, **kwargs)
         elif action == Action.Click:
-            self.click(*args, **kwargs)
+            return self.click(*args, **kwargs)
         elif action == Action.SendKeys:
-            self.send_keys(*args, **kwargs)
+            return self.send_keys(*args, **kwargs)
         elif action == Action.ScreenShot:
-            self.screen_shot(*args, **kwargs)
+            return self.screen_shot(*args, **kwargs)
+        elif action == Action.Wait:
+            return self.wait(*args, **kwargs)
         elif action == Action.Custom:
             if 'callback' in kwargs:
                 callback = kwargs.pop('callback')
             else:
                 callback = args[0]
                 args = args[1:]
-            callback(*args, **kwargs)
+            return callback(*args, **kwargs)
         elif action == Action.Quit:
-            self.quit()
+            return self.quit()
         else:
             return
-        time.sleep(wait_time)
 
     def execute(self, *args, _wait_time=None):
         selenium_actions = []
@@ -107,11 +111,11 @@ class Bot:
                 raise ValueError("Action doesn't fit any format")
 
             if type(options) == dict:
-                self.execute_action(action_type, **options, _wait_time=_wait_time)
+                self.execute_action(action_type, **options)
             elif type(options) == list:
-                self.execute_action(action_type, *options, _wait_time=_wait_time)
+                self.execute_action(action_type, *options)
             else:
-                self.execute_action(action_type, options, _wait_time=_wait_time)
+                self.execute_action(action_type, options)
         return self.session['_']
 
     def handle(self, event):

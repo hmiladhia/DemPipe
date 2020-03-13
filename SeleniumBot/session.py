@@ -16,15 +16,15 @@ class SeleniumSession(MutableMapping):
     def to_dict(self):
         return self._memory or dict()
 
-    def __call__(self):
+    def __call__(self, **s_kwargs):
         def decorator(function):
             @functools.wraps(function)
             def wrapper(*args, **kwargs):
                 try:
-                    result = function(*args, _last=self['_'], **kwargs)
+                    result = function(*args, _last=self['_'], **s_kwargs, **kwargs)
                 except TypeError as e:
                     if '_last' in str(e):
-                        result = function(*args, **kwargs)
+                        result = function(*args, **s_kwargs, **kwargs)
                     else:
                         raise e
                 self['_'] = result
@@ -47,13 +47,13 @@ class SeleniumSession(MutableMapping):
     def __delitem__(self, v) -> None:
         del self._memory[v]
 
-
-def session_context(*s_args, **s_kwargs):
-    def decorator(function):
-        @functools.wraps(function)
-        def wrapper(*args, **kwargs):
-            session_decorator = args[0].session(*s_args, *s_kwargs)
-            func = session_decorator(function)
-            return func(*args, **kwargs)
-        return wrapper
-    return decorator
+    @staticmethod
+    def session_context(_session_name='session', **s_kwargs):
+        def decorator(function):
+            @functools.wraps(function)
+            def wrapper(*args, **kwargs):
+                session_decorator = getattr(args[0], _session_name)(*s_kwargs)
+                func = session_decorator(function)
+                return func(*args, **kwargs)
+            return wrapper
+        return decorator
