@@ -1,3 +1,7 @@
+"""
+Credits : htmlcheatsheet was taken from Traversy Media tutorial that you can find at the following link :
+    https://www.youtube.com/watch?v=UB1O30fR-EE
+"""
 import os
 
 import pytest
