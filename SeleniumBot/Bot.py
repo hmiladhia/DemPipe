@@ -2,13 +2,16 @@ from os.path import abspath, dirname, join
 from random import random
 
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 from SeleniumBot import Action
 from SeleniumBot.session import PipeSession
 
 
 class Bot:
-    def __init__(self, default_url=None, driver_path=None, options=None):
+    def __init__(self, default_url=None, driver_path=None, options=None, wait=3):
         if options is None:
             self.options = webdriver.ChromeOptions()
             self.options.add_argument("--incognito")
@@ -18,11 +21,13 @@ class Bot:
             self.options = options
         self.driver_path = driver_path or join(dirname(abspath(__file__)), 'chromedriver.exe')
         self.driver = None
+        self.default_wait = wait
         self.default_url = default_url
         self.session = PipeSession()
 
     def __enter__(self):
         self.driver = webdriver.Chrome(executable_path=self.driver_path, options=self.options)
+        self.wait = WebDriverWait(self.driver, self.default_wait)
         self.session.start()
         return self
 
@@ -42,8 +47,11 @@ class Bot:
         return url
 
     @PipeSession.procedural_action()
-    def click(self, xpath):
-        self.find_by_xpath(xpath).click()
+    def click(self, xpath, by=None):
+        if by is None:
+            by = By.XPATH
+        element = self.wait.until(EC.element_to_be_clickable((by, xpath)))
+        element.click()
 
     @PipeSession.procedural_action()
     def send_keys(self, xpath, text):
