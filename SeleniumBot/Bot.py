@@ -30,6 +30,7 @@ class Bot:
         self.quit()
         self.session.quit()
 
+    @PipeSession.action()
     def find_by_xpath(self, xpath):
         return self.driver.find_element_by_xpath(xpath)
 
@@ -63,8 +64,16 @@ class Bot:
         self.driver.quit()
 
     def execute_action(self, action: Action, *args, **kwargs):
-        assert isinstance(action, Action)
+        try:
+            return self._execute_action(action, *args, as_helper=False, **kwargs)
+        except TypeError as e:
+            if str(e).endswith("got an unexpected keyword argument 'as_helper'"):
+                return self._execute_action(action, *args, **kwargs)
+            else:
+                raise e
 
+    def _execute_action(self, action: Action, *args, **kwargs):
+        assert isinstance(action, Action)
         if action == Action.Get:
             return self.get(*args, **kwargs)
         elif action == Action.Click:

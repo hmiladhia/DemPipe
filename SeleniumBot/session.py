@@ -25,11 +25,13 @@ class PipeSession(MutableMapping):
         def decorator(function):
             @functools.wraps(function)
             def wrapper(*args, **kwargs):
+                as_helper = kwargs.pop('as_helper', True)
                 result = function(*args, **s_kwargs, **kwargs)
-                if _action_type == 'action':
-                    self['last_value'] = result
-                elif _action_type == 'trigger':
-                    self['trigger'] = result
+                if not as_helper:
+                    if _action_type == 'action':
+                        self['last_value'] = result
+                    elif _action_type == 'trigger':
+                        self['trigger'] = result
                 return result
             return wrapper
         return decorator
