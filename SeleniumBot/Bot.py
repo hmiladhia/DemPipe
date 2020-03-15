@@ -11,7 +11,7 @@ from SeleniumBot.session import PipeSession
 
 
 class Bot:
-    def __init__(self, default_url=None, driver_path=None, options=None, wait=3):
+    def __init__(self, default_url=None, driver_path=None, options=None, wait=3, by=None):
         if options is None:
             self.options = webdriver.ChromeOptions()
             self.options.add_argument("--incognito")
@@ -23,11 +23,12 @@ class Bot:
         self.driver = None
         self.default_wait = wait
         self.default_url = default_url
+        self.default_by = by or By.XPATH
         self.session = PipeSession()
 
     def __enter__(self):
         self.driver = webdriver.Chrome(executable_path=self.driver_path, options=self.options)
-        self.wait = WebDriverWait(self.driver, self.default_wait)
+        self.webdriver_wait = WebDriverWait(self.driver, self.default_wait)
         self.session.start()
         return self
 
@@ -35,8 +36,8 @@ class Bot:
         self.quit()
         self.session.quit()
 
-    def find_by_xpath(self, xpath):
-        return self.driver.find_element_by_xpath(xpath)
+    def find_element(self, locator, by=None):
+        return self.webdriver_wait.until(EC.visibility_of_element_located((by or self.default_by, locator)))
 
     # Actions
 
@@ -47,15 +48,13 @@ class Bot:
         return url
 
     @PipeSession.procedural_action()
-    def click(self, xpath, by=None):
-        if by is None:
-            by = By.XPATH
-        element = self.wait.until(EC.element_to_be_clickable((by, xpath)))
+    def click(self, locator, by=None):
+        element = self.webdriver_wait.until(EC.element_to_be_clickable((by or self.default_by, locator)))
         element.click()
 
     @PipeSession.procedural_action()
-    def send_keys(self, xpath, text):
-        self.find_by_xpath(xpath).send_keys(text)
+    def send_keys(self, locator, text, by=None):
+        self.find_element(locator, by).send_keys(text)
 
     @PipeSession.action()
     def screen_shot(self, path):
