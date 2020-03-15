@@ -27,6 +27,7 @@ class CheatSheetBot(Bot):
 
     @PipeSession.procedural_action()
     def print_session(self):
+        elmt = self.find_by_xpath("/html/body/form/div[4]/textarea")
         print(self.session.to_dict())
 
 
@@ -67,3 +68,8 @@ def test_print_session(bot):
     actions = [Action.Get, (Action.Custom, bot.print_session)]
     result = bot.execute(actions)
     assert result == bot.default_url
+
+
+def test_execute(bot):
+    actions = [(Action.Custom, bot.find_by_xpath, "/html/body/form/div[4]/textarea")]
+    bot.execute(actions)
