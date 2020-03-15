@@ -4,7 +4,7 @@ from random import random
 from selenium import webdriver
 
 from SeleniumBot import Action
-from SeleniumBot.session import SeleniumSession
+from SeleniumBot.session import PipeSession
 
 
 class Bot:
@@ -19,7 +19,7 @@ class Bot:
         self.driver_path = driver_path or join(dirname(abspath(__file__)), 'chromedriver.exe')
         self.driver = None
         self.default_url = default_url
-        self.session = SeleniumSession()
+        self.session = PipeSession()
 
     def __enter__(self):
         self.driver = webdriver.Chrome(executable_path=self.driver_path, options=self.options)
@@ -30,39 +30,37 @@ class Bot:
         self.quit()
         self.session.quit()
 
-    @SeleniumSession.session_context()
+    def find_by_xpath(self, xpath):
+        return self.driver.find_element_by_xpath(xpath)
+
+    # Actions
+
+    @PipeSession.action()
     def get(self, url=None):
         url = url or self.default_url
         self.driver.get(url)
         return url
 
-    @SeleniumSession.session_context()
-    def find_by_xpath(self, xpath):
-        return self.driver.find_element_by_xpath(xpath)
-
-    @SeleniumSession.session_context()
-    def click(self, xpath, _last=None):
+    @PipeSession.procedural_action()
+    def click(self, xpath):
         self.find_by_xpath(xpath).click()
-        return _last
 
-    @SeleniumSession.session_context()
-    def send_keys(self, xpath, text, _last=None):
+    @PipeSession.procedural_action()
+    def send_keys(self, xpath, text):
         self.find_by_xpath(xpath).send_keys(text)
-        return None
 
-    @SeleniumSession.session_context()
+    @PipeSession.action()
     def screen_shot(self, path):
         self.driver.save_screenshot(path)
         return path
 
-    @SeleniumSession.session_context()
-    def wait(self, time=None, _last=None):
+    @PipeSession.procedural_action()
+    def wait(self, time=None):
         time.sleep(time or random())
-        return _last
 
-    @SeleniumSession.session_context()
+    @PipeSession.procedural_action()
     def quit(self):
-        return self.driver.quit()
+        self.driver.quit()
 
     def execute_action(self, action: Action, *args, **kwargs):
         assert isinstance(action, Action)
@@ -116,7 +114,7 @@ class Bot:
                 self.execute_action(action_type, *options)
             else:
                 self.execute_action(action_type, options)
-        return self.session['_']
+        return self.session.get_last_value()
 
     def handle(self, event):
         pass

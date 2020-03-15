@@ -8,7 +8,7 @@ import pytest
 
 from selenium import webdriver
 from SeleniumBot.Bot import Action, Bot
-from SeleniumBot.session import SeleniumSession
+from SeleniumBot.session import PipeSession
 
 
 class CheatSheetBot(Bot):
@@ -19,16 +19,15 @@ class CheatSheetBot(Bot):
             options.add_argument('--headless')
         super(CheatSheetBot, self).__init__(f'file:///{os.getcwd()}/htmlcheatsheet/index.html', driver, options)
 
-    @SeleniumSession.session_context()
-    def my_custom(self, arg1=None, _last=None):
-        arg = arg1 or _last
+    @PipeSession.action(default_arg='last_value')
+    def my_custom(self, arg1=None, default_arg=None):
+        arg = arg1 or default_arg
         print(f'{arg}')
         return arg
 
-    @SeleniumSession.session_context()
+    @PipeSession.procedural_action()
     def print_session(self):
         print(self.session.to_dict())
-        return self.session['_']
 
 
 @pytest.fixture(scope='session', autouse=True)
