@@ -1,5 +1,10 @@
+import os
+import time
+
+from datetime import datetime
 from os.path import abspath, dirname, join
 from random import random
+
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -58,13 +63,14 @@ class Bot:
         self.find_element(locator, by).send_keys(text)
 
     @PipeSession.action()
-    def screen_shot(self, path):
-        self.driver.save_screenshot(path)
-        return path
+    def screen_shot(self, path=None, file_name=None):
+        file_path = join(path or os.getcwd(), file_name or f"screenshot-{datetime.now()}.png")
+        self.driver.save_screenshot(file_path)
+        return file_path
 
     @PipeSession.procedural_action()
-    def wait(self, time=None):
-        time.sleep(time or random())
+    def wait(self, wait_time=None):
+        time.sleep(wait_time or random())
 
     @PipeSession.procedural_action()
     def quit(self):
@@ -72,12 +78,15 @@ class Bot:
 
     def execute_action(self, action: Action, *args, **kwargs):
         try:
-            return self._execute_action(action, *args, as_helper=False, **kwargs)
-        except TypeError as e:
-            if str(e).endswith("got an unexpected keyword argument 'as_helper'"):
-                return self._execute_action(action, *args, **kwargs)
-            else:
-                raise e
+            try:
+                return self._execute_action(action, *args, as_helper=False, **kwargs)
+            except TypeError as e:
+                if str(e).endswith("got an unexpected keyword argument 'as_helper'"):
+                    return self._execute_action(action, *args, **kwargs)
+                else:
+                    raise e
+        except Exception as e:
+            self.handle(e)
 
     def _execute_action(self, action: Action, *args, **kwargs):
         assert isinstance(action, Action)
@@ -132,5 +141,5 @@ class Bot:
                 self.execute_action(action_type, options)
         return self.session.get_last_value()
 
-    def handle(self, event):
-        pass
+    def handle(self, exception):
+        raise exception
