@@ -76,4 +76,4 @@ def test_execute(bot):
 
 
 def test_screen_shot(bot):
-    bot.execute([Action.Get, Action.ScreenShot])
+    bot.execute([Action.Get, (Action.ScreenShot, dict(file_name='screen.png'))])

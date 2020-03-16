@@ -64,7 +64,8 @@ class Bot:
 
     @PipeSession.action()
     def screen_shot(self, path=None, file_name=None):
-        file_path = join(path or os.getcwd(), file_name or f"screenshot-{datetime.now()}.png")
+        file_path = join(path or os.getcwd(),
+                         file_name or f"screenshot-{datetime.now().strftime('%y%m%d-%H%M%S.%f')}.png")
         self.driver.save_screenshot(file_path)
         return file_path
 
