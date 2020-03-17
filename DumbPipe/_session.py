@@ -3,7 +3,7 @@ import functools
 from collections.abc import MutableMapping
 
 
-class PipeSession(MutableMapping):
+class DSession(MutableMapping):
     def __init__(self):
         self._memory = None
 

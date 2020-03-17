@@ -1,11 +1,8 @@
-from enum import Enum
+from DumbPipe import ActionType
 
 
-class Action(Enum):
+class SelAction(ActionType):
     Get = 0
     Click = 1
     SendKeys = 2
     ScreenShot = 3
-    Quit = -1
-    Custom = -2
-    Wait = -3
