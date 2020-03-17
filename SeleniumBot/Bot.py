@@ -87,7 +87,7 @@ class Bot:
                 else:
                     raise e
         except Exception as e:
-            self.handle(e)
+            self.handle(e, action, *args, **kwargs)
 
     def _execute_action(self, action: Action, *args, **kwargs):
         assert isinstance(action, Action)
@@ -142,5 +142,5 @@ class Bot:
                 self.execute_action(action_type, options)
         return self.session.get_last_value()
 
-    def handle(self, exception):
+    def handle(self, exception, action, *args, **kwargs):
         raise exception
