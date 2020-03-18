@@ -20,3 +20,19 @@ class Action:
     def __str__(self):
         args = [str(arg) for arg in self.args] + [f'{key}={value}' for key, value in self.kwargs.items()]
         return f"{'Action' if self.action.__name__ == '<lambda>' else self.action.__name__}({', '.join(args)})"
+
+    @staticmethod
+    def parse_action(t_action):
+        args = []
+        kwargs = {}
+        if callable(t_action):
+            action_func = t_action
+        elif hasattr(t_action, '__len__') and 0 < len(t_action) <= 3:
+            action_func = t_action[0]
+            if len(t_action) > 1:
+                args = t_action[1]
+            if len(t_action) > 2:
+                kwargs = t_action[2]
+        else:
+            raise ValueError("Action doesn't fit any format")
+        return Action(action_func, *args, **kwargs)

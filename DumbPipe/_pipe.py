@@ -36,6 +36,8 @@ class DPipe:
 
     def execute_action(self, action, *args, **kwargs):
         try:
+            if not isinstance(action, Action):
+                action = Action.parse_action(action)
             return self._execute_action(action, *args, **kwargs)
         except Exception as e:
             self.handle(e, action, *args, **kwargs)
@@ -55,24 +57,8 @@ class DPipe:
                 actions.append(arg)
 
         for action in actions:
-            if isinstance(action, Action):
-                self.execute_action(action)
-            else:
-                args = []
-                kwargs = {}
-                if callable(action) == ActionType:
-                    action_func = action
-                elif hasattr(action, '__len__') and 0 < len(action) <= 3:
-                    action_func = action[0]
-                    if len(action) > 1:
-                        args = action[1]
-                    if len(action) > 2:
-                        kwargs = action[2]
-                else:
-                    print(len(action))
-                    raise ValueError("Action doesn't fit any format")
+            self.execute_action(action)
 
-                self.execute_action(Action(action_func, *args, **kwargs))
         return self.session.get_last_value()
 
     def handle(self, exception, action: ActionType, *args, **kwargs):
