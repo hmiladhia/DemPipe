@@ -44,7 +44,7 @@ class DPipe:
 
     def _execute_action(self, action: Action, *args, **kwargs):
         assert isinstance(action, Action)
-        result = action(*args, **kwargs)
+        result = action(*args, local_session=self.session, **kwargs)
         self.session.update(action.local_session)
         return result
 
@@ -57,9 +57,9 @@ class DPipe:
                 actions.append(arg)
 
         for action in actions:
-            self.execute_action(action)
+            ret = self.execute_action(action)
 
-        return self.session.get_last_value()
+        return ret
 
     def handle(self, exception, action: ActionType, *args, **kwargs):
         raise exception

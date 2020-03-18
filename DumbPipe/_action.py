@@ -11,11 +11,31 @@ class Action:
         self.kwargs = kwargs
         self.local_session = {}
 
-    def __call__(self, *args, **kwargs):
-        result = self.action(*self.args, *args, **self.kwargs, **kwargs)
+    def __call__(self, *args, local_session=None, **kwargs):
+        f_args, f_kwargs = self.__get_f_args(*args, local_session=local_session, **kwargs)
+        result = self.action(*f_args, **f_kwargs)
         if isinstance(self.sess_out, str):
             self.local_session = {self.sess_out: result}
         return result
+
+    def __get_f_args(self, *args, local_session=None, **kwargs):
+        s_args, s_kwargs = self.__get_s_args(local_session)
+        f_args = list(args or self.args) + s_args
+        f_kwargs = self.kwargs.copy()
+        f_kwargs.update(s_kwargs)
+        f_kwargs.update(kwargs)
+        return f_args, f_kwargs
+
+    def __get_s_args(self, local_session):
+        s_args = []
+        s_kwargs = {}
+        if isinstance(self.sess_in, dict):
+            s_kwargs.update({key: local_session[value] for key, value in self.sess_in.items()})
+        elif isinstance(self.sess_in, list):
+            s_args = [local_session[arg_name] for arg_name in self.sess_in]
+        elif isinstance(self.sess_in, str):
+            s_args = [local_session[self.sess_in]]
+        return s_args, s_kwargs
 
     def __str__(self):
         args = [str(arg) for arg in self.args] + [f'{key}={value}' for key, value in self.kwargs.items()]

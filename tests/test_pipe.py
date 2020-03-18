@@ -29,7 +29,33 @@ def test_pipe_execute(pipe):
     assert pipe.execute(actions) == 15
 
 
+def test_pipe_execute_regular_session(pipe):
+    actions = [Action(lambda x: x ** 2, 2),
+               Action(lambda x: x * 3, sess_in='last_value')]
+    assert pipe.execute(actions) == 12
+
+
+def test_pipe_execute_regular_session_list(pipe):
+    actions = [Action(lambda x: x ** 2, 2),
+               Action(lambda x: x * 3, sess_in=['last_value'])]
+    assert pipe.execute(actions) == 12
+
+
+def test_pipe_execute_regular_session_dict(pipe):
+    actions = [Action(lambda x: x ** 2, 2),
+               Action(lambda x: x * 3, sess_in={'x': 'last_value'})]
+    assert pipe.execute(actions) == 12
+
+
 def test_pipe_execute_tuple_action(pipe):
-    actions = [(my_function, [2], dict(param2=9))]
-    assert pipe.execute(actions) == 11
+    action = (my_function, [2], dict(param2=9))
+    assert pipe.execute(action) == 11
+
+
+def test_pipe_session_return_single_value(pipe):
+    actions = [Action(lambda x: x**2, 3),
+               Action(my_function, 2, param2=27, sess_out='test')]
+    assert pipe.execute(actions) == 29
+    assert pipe.session['last_value'] == 9
+    assert pipe.session['test'] == 29
 
