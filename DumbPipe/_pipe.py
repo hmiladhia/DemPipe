@@ -7,7 +7,7 @@ from DumbPipe import ActionType, DSession
 from DumbPipe._action import Action
 
 
-class DPipe:
+class DPipeExec:
     def __init__(self):
         self.session = DSession()
 
@@ -45,7 +45,6 @@ class DPipe:
     def _execute_action(self, action: Action, *args, **kwargs):
         assert isinstance(action, Action)
         result = action(*args, local_session=self.session, **kwargs)
-        self.session.update(action.local_session)
         return result
 
     def execute(self, *args):
@@ -55,10 +54,9 @@ class DPipe:
                 actions.extend(arg)
             else:
                 actions.append(arg)
-
+        ret = None
         for action in actions:
             ret = self.execute_action(action)
-
         return ret
 
     def handle(self, exception, action: ActionType, *args, **kwargs):

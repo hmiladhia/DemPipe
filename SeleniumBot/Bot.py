@@ -10,10 +10,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 
 from SeleniumBot import SelAction
-from DumbPipe import DSession, DPipe
+from DumbPipe import DSession, DPipeExec
 
 
-class Bot(DPipe):
+class Bot(DPipeExec):
     def __init__(self, default_url=None, driver_path=None, options=None, wait=3, by=None):
         if options is None:
             self.options = webdriver.ChromeOptions()

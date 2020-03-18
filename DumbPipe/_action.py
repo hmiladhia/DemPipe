@@ -9,13 +9,15 @@ class Action:
         self.action = action
         self.args = args
         self.kwargs = kwargs
-        self.local_session = {}
 
     def __call__(self, *args, local_session=None, **kwargs):
+        return self._execute(*args, local_session=local_session, **kwargs)
+
+    def _execute(self, *args, local_session, **kwargs):
         f_args, f_kwargs = self.__get_f_args(*args, local_session=local_session, **kwargs)
         result = self.action(*f_args, **f_kwargs)
         if isinstance(self.sess_out, str):
-            self.local_session = {self.sess_out: result}
+            local_session.update({self.sess_out: result})
         return result
 
     def __get_f_args(self, *args, local_session=None, **kwargs):

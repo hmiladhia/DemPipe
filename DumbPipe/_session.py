@@ -8,7 +8,7 @@ class DSession(MutableMapping):
         self._memory = None
 
     def start(self):
-        self._memory = {'last_value': None, 'trigger': False}
+        self._memory = {'last_value': None, 'trigger_value': None}
 
     def quit(self):
         self._memory = None

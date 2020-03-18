@@ -1,12 +1,18 @@
 import pytest
 
-from DumbPipe import DPipe, Action
+from DumbPipe import DPipeExec, Action, Trigger
 
 
 @pytest.fixture(scope='session', autouse=True)
 def pipe():
-    with DPipe() as pipe:
+    with DPipeExec() as pipe:
         yield pipe
+
+
+class DebugAction(Action):
+    def __call__(self, *args, local_session=None, **kwargs):
+        print(local_session.to_dict())
+        return self._execute(*args, local_session=local_session, **kwargs)
 
 
 def my_function(param1, param2=3):
@@ -58,4 +64,16 @@ def test_pipe_session_return_single_value(pipe):
     assert pipe.execute(actions) == 29
     assert pipe.session['last_value'] == 9
     assert pipe.session['test'] == 29
+
+
+def test_pipe_trigger_true(pipe):
+    actions = [Trigger(lambda x: x == 2, Action(lambda x: x**2, 3), Action(lambda x: x**2, 6), 2),
+               Action(my_function, 2, sess_in={'param2': 'last_value'})]
+    assert pipe.execute(actions) == 11
+
+
+def test_pipe_trigger_false(pipe):
+    actions = [Trigger(lambda x: x == 2, Action(lambda x: x**2, 3), Action(lambda x: x**2, 6), 3),
+               Action(my_function, 2, sess_in={'param2': 'last_value'})]
+    assert pipe.execute(actions) == 38
 
