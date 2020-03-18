@@ -4,6 +4,7 @@ from random import random
 
 
 from DumbPipe import ActionType, DSession
+from DumbPipe._action import Action
 
 
 class DPipe:
@@ -33,36 +34,19 @@ class DPipe:
     def quit(self):
         pass
 
-    def execute_action(self, action: ActionType, *args, **kwargs):
+    def execute_action(self, action, *args, **kwargs):
         try:
-            try:
-                return self._execute_action(action, *args, as_helper=False, **kwargs)
-            except TypeError as e:
-                if str(e).endswith("got an unexpected keyword argument 'as_helper'"):
-                    return self._execute_action(action, *args, **kwargs)
-                else:
-                    raise e
+            return self._execute_action(action, *args, **kwargs)
         except Exception as e:
             self.handle(e, action, *args, **kwargs)
 
-    def _execute_action(self, action: ActionType, *args, **kwargs):
-        assert isinstance(action, ActionType)
+    def _execute_action(self, action: Action, *args, **kwargs):
+        assert isinstance(action, Action)
+        result = action(*args, **kwargs)
+        self.session.update(action.local_session)
+        return result
 
-        if action == ActionType.Quit:
-            return self.quit()
-        elif action == ActionType.Wait:
-            return self.wait(*args, **kwargs)
-        elif action == ActionType.Custom:
-            if 'callback' in kwargs:
-                callback = kwargs.pop('callback')
-            else:
-                callback = args[0]
-                args = args[1:]
-            return callback(*args, **kwargs)
-        else:
-            return
-
-    def execute(self, *args, _wait_time=None):
+    def execute(self, *args):
         actions = []
         for arg in args:
             if not isinstance(arg, tuple) and hasattr(arg, '__iter__'):
@@ -71,24 +55,24 @@ class DPipe:
                 actions.append(arg)
 
         for action in actions:
-            options = []
-            if type(action) == ActionType:
-                action_type = action
-            elif hasattr(action, '__len__') and len(action) == 2:
-                action_type = action[0]
-                options = action[1]
-            elif hasattr(action, '__len__') and len(action) > 0:
-                action_type = action[0]
-                options = list(action[1:])
+            if isinstance(action, Action):
+                self.execute_action(action)
             else:
-                raise ValueError("Action doesn't fit any format")
+                args = []
+                kwargs = {}
+                if callable(action) == ActionType:
+                    action_func = action
+                elif hasattr(action, '__len__') and 0 < len(action) <= 3:
+                    action_func = action[0]
+                    if len(action) > 1:
+                        args = action[1]
+                    if len(action) > 2:
+                        kwargs = action[2]
+                else:
+                    print(len(action))
+                    raise ValueError("Action doesn't fit any format")
 
-            if type(options) == dict:
-                self.execute_action(action_type, **options)
-            elif type(options) == list:
-                self.execute_action(action_type, *options)
-            else:
-                self.execute_action(action_type, options)
+                self.execute_action(Action(action_func, *args, **kwargs))
         return self.session.get_last_value()
 
     def handle(self, exception, action: ActionType, *args, **kwargs):

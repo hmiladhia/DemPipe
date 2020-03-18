@@ -1,9 +1,7 @@
 import os
-import time
 
 from datetime import datetime
 from os.path import abspath, dirname, join
-from random import random
 
 
 from selenium import webdriver
