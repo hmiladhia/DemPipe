@@ -1,10 +1,9 @@
 from DumbPipe._action_base import ActionBase
-from DumbPipe._action import Action
 
 
 class SequentialPipe(ActionBase):
-    def __init__(self, *args, sess_out='last_value'):
-        super(SequentialPipe, self).__init__(*args, sess_out=sess_out)
+    def __init__(self, *args, sess_out='last_value', handler=None):
+        super(SequentialPipe, self).__init__(*args, sess_out=sess_out, handler=handler)
         self.actions = []
         for arg in args:
             if not isinstance(arg, tuple) and hasattr(arg, '__iter__'):
@@ -17,6 +16,10 @@ class SequentialPipe(ActionBase):
         action: ActionBase
         for action in self.actions:
             if not isinstance(action, ActionBase):
-                action = Action.parse_action(action)
+                action = ActionBase.parse_action(action)
             ret = action(local_session=local_session)
         return ret
+
+    @staticmethod
+    def _parse_action(t_action, *args, **kwargs):
+        return SequentialPipe(*t_action)

@@ -2,8 +2,10 @@ from DumbPipe._action import Action
 
 
 class Trigger(Action):
-    def __init__(self, trigger_func, true_action, false_action=None, *args, sess_in=None, sess_out='trigger_value', **kwargs):
-        super(Trigger, self).__init__(trigger_func, *args, sess_in=sess_in, sess_out=sess_out, **kwargs)
+    def __init__(self, trigger_func, true_action, false_action=None, *args, sess_in=None,
+                 sess_out='trigger_value', handler=None, **kwargs):
+        super(Trigger, self).__init__(trigger_func, *args, sess_in=sess_in, sess_out=sess_out,
+                                      handler=handler, **kwargs)
         self.true_action = true_action
         self.false_action = false_action
 

@@ -2,15 +2,19 @@ from abc import ABC
 
 
 class ActionBase(ABC):
-    def __init__(self, *args, sess_in=None, sess_out='last_value', **kwargs):
+    def __init__(self, *args, sess_in=None, sess_out='last_value', handler=None, **kwargs):
         self.sess_in = sess_in or []
         self.sess_out = sess_out
         self.args = args
         self.kwargs = kwargs
         self.action_name = self.__class__.__name__
+        self._handler = handler
 
     def __call__(self, *args, local_session=None, **kwargs):
-        return self._execute(*args, local_session=local_session, **kwargs)
+        try:
+            return self._execute(*args, local_session=local_session, **kwargs)
+        except Exception as e:
+            self.handler(e, *args, **kwargs)
 
     def _execute(self, *args, local_session, **kwargs):
         raise NotImplementedError('You need to overide this method')
@@ -22,3 +26,29 @@ class ActionBase(ABC):
     def __repr__(self):
         args = [str(arg) for arg in self.args] + [f'{key}={value}' for key, value in self.kwargs.items()]
         return f"{self.action_name}({', '.join(args)}, sess_in={self.sess_in}, sess_out={self.sess_out})"
+
+    def handler(self, e, *args, **kwargs):
+        if self._handler:
+            self._handler(self, e, *args, **kwargs)
+        else:
+            raise e
+
+    @staticmethod
+    def _parse_action(t_action, *args, **kwargs):
+        raise NotImplementedError
+
+    @classmethod
+    def _child_parse(cls, t_action, *args, **kwargs):
+        for sub_cls in cls.__subclasses__():
+            try:
+                return sub_cls.parse_action(t_action, *args, **kwargs)
+            except (ValueError, NotImplementedError):
+                continue
+        raise ValueError
+
+    @classmethod
+    def parse_action(cls, t_action, *args, **kwargs):
+        try:
+            return cls._parse_action(t_action, *args, **kwargs)
+        except (ValueError, NotImplementedError):
+            return cls._child_parse(t_action, *args, **kwargs)

@@ -2,8 +2,8 @@ from DumbPipe._action_base import ActionBase
 
 
 class Action(ActionBase):
-    def __init__(self, action, *args, sess_in=None, sess_out='last_value', **kwargs):
-        super(Action, self).__init__(*args, sess_in=sess_in, sess_out=sess_out, **kwargs)
+    def __init__(self, action, *args, sess_in=None, sess_out='last_value', handler=None, **kwargs):
+        super(Action, self).__init__(*args, sess_in=sess_in, sess_out=sess_out, handler=handler, **kwargs)
         self.action = action
         self.action_name = self.action_name if self.action.__name__ == '<lambda>' else self.action.__name__
 
@@ -34,12 +34,12 @@ class Action(ActionBase):
         return s_args, s_kwargs
 
     @staticmethod
-    def parse_action(t_action):
+    def _parse_action(t_action, *args, **kwargs):
         args = []
         kwargs = {}
         if callable(t_action):
             action_func = t_action
-        elif hasattr(t_action, '__len__') and 0 < len(t_action) <= 3:
+        elif isinstance(t_action, tuple) and 0 < len(t_action) <= 3:
             action_func = t_action[0]
             if len(t_action) > 1:
                 args = t_action[1]

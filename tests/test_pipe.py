@@ -29,6 +29,11 @@ def test_pipe_execute_action(pipe):
     assert pipe.session['last_value'] == 5
 
 
+def test_pipe_execute_tuple_single_action(pipe):
+    assert pipe.execute_action((my_function, [3])) == 6
+    assert pipe.session['last_value'] == 6
+
+
 def test_pipe_execute(pipe):
     actions = [Action(lambda x: x ** 2, 2),
                Action(lambda x: x * 3, 5)]
@@ -100,3 +105,9 @@ def test_pipe_trigger_seq_pipe(pipe):
     actions = [Trigger(lambda x: x == 2, seq_pipe, Action(lambda x: x**2, 6), 2),
                Action(my_function, 2, sess_in={'param2': 'last_value'})]
     assert pipe.execute(actions) == 17
+
+
+def test_seq_pipe_parse(pipe):
+    seq_pipe = [Action(lambda x: x ** 2, 2),
+                Action(lambda x: x * 3, 6)]
+    assert pipe.execute_action(seq_pipe) == 18

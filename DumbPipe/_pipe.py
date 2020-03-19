@@ -3,9 +3,8 @@ import time
 from random import random
 
 
-from DumbPipe import ActionType, DSession
+from DumbPipe import DSession
 from DumbPipe._action_base import ActionBase
-from DumbPipe._action import Action
 from DumbPipe._sequential_pipe import SequentialPipe
 
 
@@ -37,18 +36,13 @@ class DPipeExec:
         pass
 
     def execute_action(self, action, *args, **kwargs):
-        try:
-            return self._execute_action(action, *args, **kwargs)
-        except Exception as e:
-            self.handle(e, action, *args, **kwargs)
-
-    def _execute_action(self, action: ActionBase, *args, **kwargs):
-        assert isinstance(action, ActionBase)
+        if not isinstance(action, ActionBase):
+            action = ActionBase.parse_action(action, *args, **kwargs)
         return action(*args, local_session=self.session, **kwargs)
 
     def execute(self, *args):
-        pipe = SequentialPipe(*args)
+        pipe = SequentialPipe(*args, handler=self.handler)
         return self.execute_action(pipe)
 
-    def handle(self, exception, action: ActionType, *args, **kwargs):
+    def handler(self, exception, action: ActionBase, *args, **kwargs):
         raise exception
