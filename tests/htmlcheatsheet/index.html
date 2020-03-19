@@ -98,7 +98,7 @@
 			<br>
 			<div>
 				<label>Message</label>
-				<textarea name="message"></textarea>
+				<textarea name="message" id="message"></textarea>
 			</div>
 			<br>
 			<div>
@@ -124,8 +124,11 @@
 		</form>
 
 		<!-- Button -->
-		<button>Click Me</button>
+		<button id="ok-button">Click Me</button>
 
+		<br>
+		<div id="result"></div>
+		
 		<br>
 
 		<!-- Image -->
@@ -148,5 +151,14 @@
 		<p><cite>HTML crash course</cite> by Brad Traversy</p>
 
 		<div style="margin-top:500px"></div>
+		<script>
+			but = document.getElementById('ok-button');
+			but.addEventListener('click', function(){
+				value = document.getElementById('message').value;
+				result = document.getElementById('result');
+				result.innerText = value;
+			})
+			
+		</script>
 	</body>
 </html>
