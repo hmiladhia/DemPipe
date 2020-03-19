@@ -1,8 +1,2 @@
-from DumbPipe import ActionType
-
-
-class SelAction(ActionType):
-    Get = 0
-    Click = 1
-    SendKeys = 2
-    ScreenShot = 3
+from SeleniumBot.Bot import Bot
+from DumbPipe import Action

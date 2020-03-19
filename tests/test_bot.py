@@ -7,8 +7,7 @@ import os
 import pytest
 
 from selenium import webdriver
-from SeleniumBot.Bot import SelAction, Bot
-from DumbPipe import DSession
+from SeleniumBot import Bot, Action
 
 
 class CheatSheetBot(Bot):
@@ -16,16 +15,15 @@ class CheatSheetBot(Bot):
         if options is None:
             options = webdriver.ChromeOptions()
             options.add_argument("--incognito")
-            options.add_argument('--headless')
-        super(CheatSheetBot, self).__init__(f'file:///{os.getcwd()}/htmlcheatsheet/index.html', driver, options)
+            # options.add_argument('--headless')
+        super(CheatSheetBot, self).__init__(driver, options,
+                                            default_url=f'file:///{os.getcwd()}/htmlcheatsheet/index.html')
 
-    @DSession.action(default_arg='last_value')
     def my_custom(self, arg1=None, default_arg=None):
         arg = arg1 or default_arg
         print(f'{arg}')
         return arg
 
-    @DSession.procedural_action()
     def print_session(self):
         elmt = self.find_element("/html/body/form/div[4]/textarea")
         print(self.session.to_dict())
@@ -37,43 +35,44 @@ def bot():
         yield bot
 
 
-@pytest.mark.parametrize('actions', [
-    SelAction.Get,
-    [SelAction.Get],
-    (SelAction.SendKeys, "/html/body/form/div[4]/textarea", "Hello World"),
-    (SelAction.SendKeys, ["/html/body/form/div[4]/textarea", "Hello World"]),
-    (SelAction.SendKeys, {"xpath": "/html/body/form/div[4]/textarea", "text": "Hello World"}),
-    [SelAction.Get, (SelAction.SendKeys, "/html/body/form/div[4]/textarea", "Hello World")],
-])
-def test_execute(actions, bot):
-    bot.execute(actions)
+def test_bot_fire_up(bot):
+    actions = [bot.get,
+               (bot.inner_text, [r'//*[@id="head-one"]'])]
+    assert bot.execute(actions) == 'Heading One'
 
 
-def test_execute_with_two_actions(bot):
-    actions = [SelAction.Get, (SelAction.SendKeys, "/html/body/form/div[4]/textarea", "Hello World")]
-    bot.execute(actions, actions)
+def test_click(bot):
+    actions = [bot.get,
+               (bot.click, [r'//*[@id="blog-link"]']),
+               (bot.inner_text, [r'/html/body/header/h1'])]
+    assert bot.execute(actions) == 'My Website'
 
 
-@pytest.mark.parametrize('actions, expected', [
-    ('[SelAction.Get, (SelAction.Custom, bot.my_custom, "Hello World")]', "Hello World"),
-    ('[SelAction.Get, (SelAction.Custom, bot.my_custom)]', f'file:///{os.getcwd()}/htmlcheatsheet/index.html'),
-
-])
-def test_session_last(bot, actions, expected):
-    result = bot.execute(eval(actions))
-    assert result == expected
-
-
-def test_print_session(bot):
-    actions = [SelAction.Get, (SelAction.Custom, bot.print_session)]
-    result = bot.execute(actions)
-    assert result == bot.default_url
-
-
-def test_execute(bot):
-    actions = [(SelAction.Custom, bot.find_element, "/html/body/form/div[4]/textarea")]
-    bot.execute(actions)
-
-
-def test_screen_shot(bot):
-    bot.execute([SelAction.Get, (SelAction.ScreenShot, dict(file_name='screen.png'))])
+# def test_execute_with_two_actions(bot):
+#     actions = [SelAction.Get, (SelAction.SendKeys, "/html/body/form/div[4]/textarea", "Hello World")]
+#     bot.execute(actions, actions)
+#
+#
+# @pytest.mark.parametrize('actions, expected', [
+#     ('[SelAction.Get, (SelAction.Custom, bot.my_custom, "Hello World")]', "Hello World"),
+#     ('[SelAction.Get, (SelAction.Custom, bot.my_custom)]', f'file:///{os.getcwd()}/htmlcheatsheet/index.html'),
+#
+# ])
+# def test_session_last(bot, actions, expected):
+#     result = bot.execute(eval(actions))
+#     assert result == expected
+#
+#
+# def test_print_session(bot):
+#     actions = [SelAction.Get, (SelAction.Custom, bot.print_session)]
+#     result = bot.execute(actions)
+#     assert result == bot.default_url
+#
+#
+# def test_execute(bot):
+#     actions = [(SelAction.Custom, bot.find_element, "/html/body/form/div[4]/textarea")]
+#     bot.execute(actions)
+#
+#
+# def test_screen_shot(bot):
+#     bot.execute([SelAction.Get, (SelAction.ScreenShot, dict(file_name='screen.png'))])

@@ -23,15 +23,12 @@ class DPipeExec:
 
     # Actions
 
-    @DSession.procedural_action()
     def wait(self, wait_time=None):
         time.sleep(wait_time or random())
 
-    @DSession.procedural_action()
     def start(self):
         pass
 
-    @DSession.procedural_action()
     def quit(self):
         pass
 
