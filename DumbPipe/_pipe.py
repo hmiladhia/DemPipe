@@ -4,7 +4,9 @@ from random import random
 
 
 from DumbPipe import ActionType, DSession
+from DumbPipe._action_base import ActionBase
 from DumbPipe._action import Action
+from DumbPipe._sequential_pipe import SequentialPipe
 
 
 class DPipeExec:
@@ -36,28 +38,17 @@ class DPipeExec:
 
     def execute_action(self, action, *args, **kwargs):
         try:
-            if not isinstance(action, Action):
-                action = Action.parse_action(action)
             return self._execute_action(action, *args, **kwargs)
         except Exception as e:
             self.handle(e, action, *args, **kwargs)
 
-    def _execute_action(self, action: Action, *args, **kwargs):
-        assert isinstance(action, Action)
-        result = action(*args, local_session=self.session, **kwargs)
-        return result
+    def _execute_action(self, action: ActionBase, *args, **kwargs):
+        assert isinstance(action, ActionBase)
+        return action(*args, local_session=self.session, **kwargs)
 
     def execute(self, *args):
-        actions = []
-        for arg in args:
-            if not isinstance(arg, tuple) and hasattr(arg, '__iter__'):
-                actions.extend(arg)
-            else:
-                actions.append(arg)
-        ret = None
-        for action in actions:
-            ret = self.execute_action(action)
-        return ret
+        pipe = SequentialPipe(*args)
+        return self.execute_action(pipe)
 
     def handle(self, exception, action: ActionType, *args, **kwargs):
         raise exception

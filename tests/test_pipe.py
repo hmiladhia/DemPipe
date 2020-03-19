@@ -1,6 +1,6 @@
 import pytest
 
-from DumbPipe import DPipeExec, Action, Trigger
+from DumbPipe import DPipeExec, Action, Trigger, SequentialPipe
 
 
 @pytest.fixture(scope='session', autouse=True)
@@ -77,3 +77,26 @@ def test_pipe_trigger_false(pipe):
                Action(my_function, 2, sess_in={'param2': 'last_value'})]
     assert pipe.execute(actions) == 38
 
+
+@pytest.mark.parametrize("action, expected", [
+    (Action(lambda x: x**2, 2), 'Action'),
+    (Action(my_function, 2), 'my_function'),
+    (Trigger(lambda x: x == 2, lambda x: x, 2), 'Trigger'),
+    (Trigger(my_function, lambda x: x, 2), 'my_function'),
+])
+def test_action_name(action, expected):
+    assert action.action_name == expected
+
+
+def test_seq_pipe(pipe):
+    actions = SequentialPipe([Action(lambda x: x ** 2, 2),
+                              Action(lambda x: x * 3, 5)])
+    assert pipe.execute(actions) == 15
+
+
+def test_pipe_trigger_seq_pipe(pipe):
+    seq_pipe = SequentialPipe([Action(lambda x: x ** 2, 2),
+                              Action(lambda x: x * 3, 5)])
+    actions = [Trigger(lambda x: x == 2, seq_pipe, Action(lambda x: x**2, 6), 2),
+               Action(my_function, 2, sess_in={'param2': 'last_value'})]
+    assert pipe.execute(actions) == 17

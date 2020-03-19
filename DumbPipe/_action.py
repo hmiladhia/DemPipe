@@ -1,17 +1,11 @@
-class Action:
-    id = -1
+from DumbPipe._action_base import ActionBase
 
+
+class Action(ActionBase):
     def __init__(self, action, *args, sess_in=None, sess_out='last_value', **kwargs):
-        self.sess_in = sess_in or []
-        self.sess_out = sess_out
-        self.__class__.id += 1
-        self.id = self.id
+        super(Action, self).__init__(*args, sess_in=sess_in, sess_out=sess_out, **kwargs)
         self.action = action
-        self.args = args
-        self.kwargs = kwargs
-
-    def __call__(self, *args, local_session=None, **kwargs):
-        return self._execute(*args, local_session=local_session, **kwargs)
+        self.action_name = self.action_name if self.action.__name__ == '<lambda>' else self.action.__name__
 
     def _execute(self, *args, local_session, **kwargs):
         f_args, f_kwargs = self.__get_f_args(*args, local_session=local_session, **kwargs)
@@ -38,10 +32,6 @@ class Action:
         elif isinstance(self.sess_in, str):
             s_args = [local_session[self.sess_in]]
         return s_args, s_kwargs
-
-    def __str__(self):
-        args = [str(arg) for arg in self.args] + [f'{key}={value}' for key, value in self.kwargs.items()]
-        return f"{'Action' if self.action.__name__ == '<lambda>' else self.action.__name__}({', '.join(args)})"
 
     @staticmethod
     def parse_action(t_action):
