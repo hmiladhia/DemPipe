@@ -20,7 +20,7 @@ class PipeExecutor(PipeExecutorBase, IMail, INotify):
 
     # Handler
     def _get_error_message(self, exception, tb) -> str:
-        return "## Traceback\n" + '\n\n'.join(map(lambda x: f'<span style="color: red;">{x}</span>', tb.split('\n')))
+        return "# Traceback\n" + '\n\n'.join(map(lambda x: f'<span style="color: red;">{x}</span>', tb.split('\n')))
 
     def _get_error_subject(self, exception) -> str:
         return f'Failed: {exception}'

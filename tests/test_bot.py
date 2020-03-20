@@ -16,18 +16,25 @@ from SeleniumBot import Bot, Action
 
 
 class CheatSheetBot(Bot):
-    def __init__(self, driver=None, options=None):
+    def __init__(self, driver=None, options=None, config_file=None):
         if options is None:
             options = webdriver.ChromeOptions()
             options.add_argument("--incognito")
             options.add_argument('--headless')
         super(CheatSheetBot, self).__init__(driver, options,
-                                            default_url=f'file:///{os.getcwd()}/htmlcheatsheet/index.html')
+                                            default_url=f'file:///{os.getcwd()}/htmlcheatsheet/index.html',
+                                            config_file=config_file)
 
 
 @pytest.fixture(scope='session', autouse=True)
 def bot():
     with CheatSheetBot() as bot:
+        yield bot
+
+
+@pytest.fixture(scope='session', autouse=True)
+def mailing_bot():
+    with CheatSheetBot(config_file='DumbPipe.PipeConfig') as bot:
         yield bot
 
 
@@ -58,3 +65,10 @@ def test_screen_shot(bot):
                Action(bot.screen_shot, 'imgs')]
     with open('ref.pickle', 'rb') as file:
         assert pickle.load(file) == imagehash.average_hash(Image.open(bot.execute(actions)))
+
+
+def test_error(mailing_bot):
+    actions = [mailing_bot.get,
+               (lambda x: x/0, [2])]
+    with pytest.raises(ZeroDivisionError):
+        mailing_bot.execute(actions)

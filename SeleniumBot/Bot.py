@@ -62,3 +62,10 @@ class Bot(PipeExecutor):
     def quit(self, exc_type, exc_val, exc_tb):
         super(Bot, self).quit(exc_type, exc_val, exc_tb)
         self.driver.quit()
+
+    # handler
+    def _get_error_message(self, exception, tb) -> str:
+        message = super(Bot, self)._get_error_message(exception, tb)
+        message += "\n# Screen Shot"
+        message += f"\n![screen]({self.screen_shot('log')})"
+        return message
