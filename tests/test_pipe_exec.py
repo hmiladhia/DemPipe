@@ -1,13 +1,20 @@
 import pytest
 
-from DumbPipe import PipeExec
+from DumbPipe import PipeExecutor
+from configDmanager.errors import ConfigNotFoundError
 
 
 @pytest.fixture(scope='session', autouse=True)
 def pipe():
-    with PipeExec() as pipe:
+    with PipeExecutor() as pipe:
         pipe.mail_subject = "Pipe Exec Testing"
         yield pipe
+
+
+def test_config_not_found_error():
+    with pytest.raises(ConfigNotFoundError):
+        with PipeExecutor('TestConfig'):
+            pipe.execute((lambda x: x, [2]))
 
 
 def test_error(pipe):

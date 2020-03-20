@@ -1,2 +1,3 @@
+from DumbPipe import Action, Trigger, SequentialPipe
 from SeleniumBot.Bot import Bot
-from DumbPipe import Action
+

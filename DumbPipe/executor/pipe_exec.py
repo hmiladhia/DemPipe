@@ -2,15 +2,14 @@ import os
 import traceback
 
 from configDmanager import import_config, Config
-from configDmanager.errors import ConfigNotFoundError
 from Dmail import Email
 from plyer import notification
 
-from DumbPipe._action_base import ActionBase
-from DumbPipe._pipe import DPipeExec
+from DumbPipe.action import ActionBase
+from DumbPipe.executor import PipeExecutorBase
 
 
-class PipeExec(DPipeExec):
+class PipeExecutor(PipeExecutorBase):
     mail_default_receiver: str
     mail_subject: str
     mail_use_tls: bool
@@ -19,8 +18,8 @@ class PipeExec(DPipeExec):
     mail_port: int
     mail_server: str
 
-    def __init__(self, config_file=r'config.PipeConfig'):
-        super(PipeExec, self).__init__()
+    def __init__(self, config_file=r'DumbPipe.PipeConfig'):
+        super(PipeExecutor, self).__init__()
         config = self.import_config(config_file)
         self.pipe_name = config.pipe_name
         self.set_mail_params(**config.mail)
@@ -47,9 +46,9 @@ class PipeExec(DPipeExec):
 
     @staticmethod
     def import_config(config_file):
-        try:
+        if config_file:
             return import_config(config_file, os.path.dirname(os.path.abspath(__file__)))
-        except ConfigNotFoundError:
+        else:
             return Config(dict(mail=dict(), pipe_name=None))
 
     # Actions
@@ -74,4 +73,4 @@ class PipeExec(DPipeExec):
             message = "##" + '\n\n'.join(map(lambda x: f'<span style="color: red;">{x}</span>', tb.split('\n')))
             subject = f'Error: {exception}'
             self.send_mail(message, self.mail_default_receiver, subject)
-        return super(PipeExec, self).handler(action, exception, *args, **kwargs)
+        return super(PipeExecutor, self).handler(action, exception, *args, **kwargs)

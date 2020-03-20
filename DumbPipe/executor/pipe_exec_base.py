@@ -1,16 +1,10 @@
-import time
-
-from random import random
-
-
-from DumbPipe import DSession
-from DumbPipe._action_base import ActionBase
-from DumbPipe._sequential_pipe import SequentialPipe
+from DumbPipe.context import PipeContext
+from DumbPipe.action import SequentialPipe, ActionBase
 
 
-class DPipeExec:
+class PipeExecutorBase:
     def __init__(self):
-        self.session = DSession()
+        self.session = PipeContext()
 
     def __enter__(self):
         self.start()
@@ -22,10 +16,6 @@ class DPipeExec:
         self.session.quit()
 
     # Actions
-
-    def wait(self, wait_time=None):
-        time.sleep(wait_time or random())
-
     def start(self):
         pass
 

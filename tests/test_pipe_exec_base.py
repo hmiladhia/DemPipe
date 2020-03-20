@@ -1,18 +1,12 @@
 import pytest
 
-from DumbPipe import DPipeExec, Action, Trigger, SequentialPipe
+from DumbPipe import PipeExecutorBase, Action, Trigger, SequentialPipe
 
 
 @pytest.fixture(scope='session', autouse=True)
 def pipe():
-    with DPipeExec() as pipe:
+    with PipeExecutorBase() as pipe:
         yield pipe
-
-
-class DebugAction(Action):
-    def __call__(self, *args, local_session=None, **kwargs):
-        print(local_session.to_dict())
-        return self._execute(*args, local_session=local_session, **kwargs)
 
 
 def my_function(param1, param2=3):
@@ -72,19 +66,19 @@ def test_pipe_session_return_single_value(pipe):
 
 
 def test_pipe_trigger_true(pipe):
-    actions = [Trigger(lambda x: x == 2, Action(lambda x: x**2, 3), Action(lambda x: x**2, 6), 2),
+    actions = [Trigger(lambda x: x == 2, Action(lambda x: x ** 2, 3), Action(lambda x: x ** 2, 6), 2),
                Action(my_function, 2, sess_in={'param2': 'last_value'})]
     assert pipe.execute(actions) == 11
 
 
 def test_pipe_trigger_false(pipe):
-    actions = [Trigger(lambda x: x == 2, Action(lambda x: x**2, 3), Action(lambda x: x**2, 6), 3),
+    actions = [Trigger(lambda x: x == 2, Action(lambda x: x ** 2, 3), Action(lambda x: x ** 2, 6), 3),
                Action(my_function, 2, sess_in={'param2': 'last_value'})]
     assert pipe.execute(actions) == 38
 
 
 @pytest.mark.parametrize("action, expected", [
-    (Action(lambda x: x**2, 2), 'Action'),
+    (Action(lambda x: x ** 2, 2), 'Action'),
     (Action(my_function, 2), 'my_function'),
     (Trigger(lambda x: x == 2, lambda x: x, 2), 'Trigger'),
     (Trigger(my_function, lambda x: x, 2), 'my_function'),
@@ -102,7 +96,7 @@ def test_seq_pipe(pipe):
 def test_pipe_trigger_seq_pipe(pipe):
     seq_pipe = SequentialPipe([Action(lambda x: x ** 2, 2),
                               Action(lambda x: x * 3, 5)])
-    actions = [Trigger(lambda x: x == 2, seq_pipe, Action(lambda x: x**2, 6), 2),
+    actions = [Trigger(lambda x: x == 2, seq_pipe, Action(lambda x: x ** 2, 6), 2),
                Action(my_function, 2, sess_in={'param2': 'last_value'})]
     assert pipe.execute(actions) == 17
 

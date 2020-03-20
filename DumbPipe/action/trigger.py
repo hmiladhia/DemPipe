@@ -1,4 +1,4 @@
-from DumbPipe._action import Action
+from DumbPipe.action import Action
 
 
 class Trigger(Action):

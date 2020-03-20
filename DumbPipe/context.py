@@ -1,7 +1,7 @@
 from collections.abc import MutableMapping
 
 
-class DSession(MutableMapping):
+class PipeContext(MutableMapping):
     def __init__(self):
         self._memory = None
 

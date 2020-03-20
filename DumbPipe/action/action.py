@@ -1,4 +1,4 @@
-from DumbPipe._action_base import ActionBase
+from DumbPipe.action import ActionBase
 
 
 class Action(ActionBase):
