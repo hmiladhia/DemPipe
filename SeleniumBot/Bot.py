@@ -9,11 +9,12 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 
-from DumbPipe import DPipeExec
+from DumbPipe import PipeExec
 
 
-class Bot(DPipeExec):
-    def __init__(self, driver_path=None, options=None, default_url=None, wait=3, by=None):
+class Bot(PipeExec):
+    def __init__(self, driver_path=None, options=None, default_url=None, wait=3, by=None,
+                 config_file=r'config.BotConfig'):
         if options is None:
             self.options = webdriver.ChromeOptions()
             self.options.add_argument("--incognito")
@@ -27,7 +28,7 @@ class Bot(DPipeExec):
         self.default_wait = wait
         self.default_url = default_url
         self.default_by = by or By.XPATH
-        super(Bot, self).__init__()
+        super(Bot, self).__init__(config_file=config_file)
 
     # Actions
     def find_element(self, locator, by=None):

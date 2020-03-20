@@ -1,0 +1,11 @@
+{
+  "mail": {
+    "mail_server": "smtp.gmail.com",
+	"mail_port": 587,
+	"mail_user": "${os_environ[user]}",
+	"mail_password": "${os_environ[password]}",
+	"mail_use_tls": true,
+	"mail_default_receiver": "${os_environ[receiver]}"
+  },
+  "pipe_name": "Pipe Execution"
+}

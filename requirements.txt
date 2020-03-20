@@ -1,3 +1,4 @@
+configDmanager
 PIL
 imagehash
 plyer

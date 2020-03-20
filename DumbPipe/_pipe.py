@@ -41,5 +41,5 @@ class DPipeExec:
         pipe = SequentialPipe(*args, handler=self.handler)
         return self.execute_action(pipe)
 
-    def handler(self, exception, action: ActionBase, *args, **kwargs):
+    def handler(self, action: ActionBase, exception, *args, **kwargs):
         raise exception
