@@ -12,14 +12,14 @@ class PipeExecutorBase:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.quit()
+        self.quit(exc_type, exc_val, exc_tb)
         self.session.quit()
 
     # Actions
     def start(self):
         pass
 
-    def quit(self):
+    def quit(self, exc_type, exc_val, exc_tb):
         pass
 
     def execute_action(self, action, *args, **kwargs):

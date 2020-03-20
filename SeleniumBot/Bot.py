@@ -59,5 +59,6 @@ class Bot(PipeExecutor):
         self.driver = webdriver.Chrome(executable_path=self.driver_path, options=self.options)
         self.webdriver_wait = WebDriverWait(self.driver, self.default_wait)
 
-    def quit(self):
+    def quit(self, exc_type, exc_val, exc_tb):
+        super(Bot, self).quit(exc_type, exc_val, exc_tb)
         self.driver.quit()

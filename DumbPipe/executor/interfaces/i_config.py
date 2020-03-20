@@ -19,9 +19,11 @@ class IConfig:
         if config_file:
             return import_config(config_file)
         else:
-            return self.default_config(Config(dict()))
+            config = Config(dict())
+            self.set_default_config(config)
+            return config
 
-    def default_config(self, config):
+    def set_default_config(self, config):
         config.pipe_name = None
 
     def get_title(self, title=None):

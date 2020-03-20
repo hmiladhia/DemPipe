@@ -11,10 +11,15 @@ def pipe():
         yield pipe
 
 
+def test_default():
+    with PipeExecutor(None) as p:
+        p.execute((lambda x: x, [2]))
+
+
 def test_config_not_found_error():
     with pytest.raises(ConfigNotFoundError):
-        with PipeExecutor('TestConfig'):
-            pipe.execute((lambda x: x, [2]))
+        with PipeExecutor('TestConfig') as p:
+            p.execute((lambda x: x, [2]))
 
 
 def test_error(pipe):

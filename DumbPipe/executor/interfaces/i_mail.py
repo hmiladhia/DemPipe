@@ -18,9 +18,9 @@ class IMail(IConfig):
         super(IMail, self).load_config(config)
         self.set_mail_params(**config.mail)
 
-    def default_config(self, config):
+    def set_default_config(self, config):
+        super(IMail, self).set_default_config(config)
         config.mail = Config(dict())
-        print(config)
 
     def set_mail_params(self, mail_server=None, mail_port=None, mail_user=None, mail_password=None,
                         mail_use_tls=True, mail_default_receiver=None):
