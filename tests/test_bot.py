@@ -22,7 +22,7 @@ class CheatSheetBot(Bot):
             options.add_argument("--incognito")
             options.add_argument('--headless')
         super(CheatSheetBot, self).__init__(driver, options,
-                                            default_url=f'file:///{os.getcwd()}/htmlcheatsheet/index.html',
+                                            default_url=f'file:///{os.getcwd()}/tests/htmlcheatsheet/index.html',
                                             config_file=config_file)
 
 
@@ -62,13 +62,13 @@ def test_send_keys(bot):
 def test_screen_shot(bot):
     actions = [bot.get,
                (bot.click, [r'//*[@id="blog-link"]']),
-               Action(bot.screen_shot, 'imgs')]
-    with open('ref.pickle', 'rb') as file:
+               Action(bot.screen_shot, 'tests/imgs')]
+    with open('tests/ref.pickle', 'rb') as file:
         assert pickle.load(file) == imagehash.average_hash(Image.open(bot.execute(actions)))
 
 
-def test_error(mailing_bot):
-    actions = [mailing_bot.get,
-               (lambda x: x/0, [2])]
-    with pytest.raises(ZeroDivisionError):
-        mailing_bot.execute(actions)
+# def test_error(mailing_bot):
+#     actions = [mailing_bot.get,
+#                (lambda x: x/0, [2])]
+#     with pytest.raises(ZeroDivisionError):
+#         mailing_bot.execute(actions)
