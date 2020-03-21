@@ -1,7 +1,10 @@
+import os
+
 import pytest
 
-from DumbPipe import PipeExecutor
 from configDmanager.errors import ConfigNotFoundError
+
+from DumbPipe import PipeExecutor
 
 
 @pytest.fixture(scope='session', autouse=True)
@@ -22,9 +25,16 @@ def test_config_not_found_error():
             p.execute((lambda x: x, [2]))
 
 
-def test_error(pipe):
+def test_error(monkeypatch, mocker, pipe):
+    err_msg = 'zero division error message'
+    monkeypatch.setattr(pipe, '_get_error_message', lambda x, y: err_msg, raising=True)
+    mocker.spy(pipe, 'send_mail')
+
     with pytest.raises(ZeroDivisionError):
         pipe.execute((lambda x: x/0, [2]))
+
+    assert pipe.send_mail.call_count == 1
+    pipe.send_mail.assert_called_with(err_msg, os.environ.get('receiver'), 'Failed: division by zero')
 
 
 def test_push_notification(pipe):
