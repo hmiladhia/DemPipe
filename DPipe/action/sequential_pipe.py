@@ -2,8 +2,8 @@ from DPipe.action import ActionBase
 
 
 class SequentialPipe(ActionBase):
-    def __init__(self, *args, sess_out='last_value', handler=None):
-        super(SequentialPipe, self).__init__(*args, sess_out=sess_out, handler=handler)
+    def __init__(self, *args, ctx_out='last_value', handler=None):
+        super(SequentialPipe, self).__init__(*args, ctx_out=ctx_out, handler=handler)
         self.actions = []
         for arg in args:
             if not isinstance(arg, tuple) and hasattr(arg, '__iter__'):

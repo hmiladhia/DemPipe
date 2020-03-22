@@ -2,9 +2,9 @@ from abc import ABC
 
 
 class ActionBase(ABC):
-    def __init__(self, *args, sess_in=None, sess_out='last_value', handler=None, **kwargs):
-        self.sess_in = sess_in or []
-        self.sess_out = sess_out
+    def __init__(self, *args, ctx_in=None, ctx_out='last_value', handler=None, **kwargs):
+        self.ctx_in = ctx_in or []
+        self.ctx_out = ctx_out
         self.args = args
         self.kwargs = kwargs
         self.action_name = self.__class__.__name__
@@ -25,7 +25,7 @@ class ActionBase(ABC):
 
     def __repr__(self):
         args = [str(arg) for arg in self.args] + [f'{key}={value}' for key, value in self.kwargs.items()]
-        return f"{self.action_name}({', '.join(args)}, sess_in={self.sess_in}, sess_out={self.sess_out})"
+        return f"{self.action_name}({', '.join(args)}, ctx_in={self.ctx_in}, ctx_out={self.ctx_out})"
 
     def handler(self, e, *args, **kwargs):
         if self._handler:

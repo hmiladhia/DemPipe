@@ -14,8 +14,8 @@ from DPipe import PipeExecutor, Action
 
 with PipeExecutor() as pipe:
     actions = [Action(lambda x: x**2, 2),  # returns 4
-               Action(lambda x: x+3, sess_in='last_value', sess_out='my_result_name'),  # returns 4+3
-               Action(lambda x: x*2, sess_in='my_result_name')  # returns 2*7
+               Action(lambda x: x+3, ctx_in='last_value', ctx_out='my_result_name'),  # returns 4+3
+               Action(lambda x: x*2, ctx_in='my_result_name')  # returns 2*7
               ]
     result = pipe.execute(actions)
     print('result:', result)  # 14
@@ -30,9 +30,9 @@ from DPipe import PipeExecutor, Action, Trigger
 with PipeExecutor() as pipe:
     actions = [Action(lambda x: x**2, 2),  # returns 4
                Trigger(lambda x: x==3,   # returns False -> executes the second action
-                       Action(lambda x: x+3, sess_in='last_value'),  # ignored
-                       Action(lambda x: x+7, sess_in='last_value'),  # returns 11
-                       sess_in='last_value')
+                       Action(lambda x: x+3, ctx_in='last_value'),  # ignored
+                       Action(lambda x: x+7, ctx_in='last_value'),  # returns 11
+                       ctx_in='last_value')
               ]
     result = pipe.execute(actions)
     print('result:', result)  # 11
