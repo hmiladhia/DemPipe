@@ -1,16 +1,16 @@
-# DPipe
+# DemPipe
 
 ## Installation
 
 A simple pip install will do :
 
 ```bash
-python -m pip install DPipe
+python -m pip install DemPipe
 ```
 
 ## Use
 ```python
-from DPipe import PipeExecutor, Action
+from DemPipe import PipeExecutor, Action
 
 with PipeExecutor() as pipe:
     actions = [Action(lambda x: x**2, 2),  # returns 4
@@ -25,7 +25,7 @@ with PipeExecutor() as pipe:
 
 You can also use a Trigger Action for conditional Actions in the pipeline ! 
 ```python
-from DPipe import PipeExecutor, Action, Trigger
+from DemPipe import PipeExecutor, Action, Trigger
 
 with PipeExecutor() as pipe:
     actions = [Action(lambda x: x**2, 2),  # returns 4
@@ -57,7 +57,7 @@ In case an error occurs, you can configure an automatic e-mail to be sent with t
 
 - Specify **config_file** to the **PipeExecutor**
 ```python
-from DPipe import PipeExecutor, Action
+from DemPipe import PipeExecutor, Action
 
 with PipeExecutor(config_file='ConfigsFolder.MyConfig') as pipe:
     pipe.execute(Action(lambda x: x/0, 2))  # raises ZeroDivisionException

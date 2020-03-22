@@ -1,5 +1,5 @@
-from DPipe.context import PipeContext
-from DPipe.action import SequentialPipe, ActionBase
+from DemPipe.context import PipeContext
+from DemPipe.action import SequentialPipe, ActionBase
 
 
 class PipeExecutorBase:

@@ -1,13 +1,13 @@
 {
   "__name": "PackageConfig",
-  "name": "DPipe",
+  "name": "DemPipe",
   "author": "Dhia Hmila",
   "author_email": "hmiladhia@hotmail.fr",
   "description": "A simple Pipeline creator",
   "long_description": "${read_file[README.md]}",
   "long_description_content_type": "text/markdown",
-  "url": "https://github.com/hmiladhia/DPipe",
-  "packages": ["DPipe"],
+  "url": "https://github.com/hmiladhia/DemPipe",
+  "packages": ["DemPipe"],
   "install_requires": ["configDmanager>=0.1.8", "Dmail>=0.1.0"],
   "classifiers": [ 
     "Programming Language :: Python :: 3", 

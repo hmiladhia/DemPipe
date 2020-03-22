@@ -1,4 +1,4 @@
-from DPipe.action import ActionBase
+from DemPipe.action import ActionBase
 
 
 class SequentialPipe(ActionBase):

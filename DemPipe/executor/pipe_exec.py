@@ -1,11 +1,11 @@
 import traceback
 
-from DPipe.executor import PipeExecutorBase
-from DPipe.executor.interfaces import IMail, INotify
+from DemPipe.executor import PipeExecutorBase
+from DemPipe.executor.interfaces import IMail, INotify
 
 
 class PipeExecutor(PipeExecutorBase, IMail, INotify):
-    def __init__(self, config_file=r'DPipe.PipeConfig'):
+    def __init__(self, config_file=r'DemPipe.PipeConfig'):
         super(PipeExecutor, self).__init__()
         IMail.__init__(self, config_file)
         INotify.__init__(self, config_file)
