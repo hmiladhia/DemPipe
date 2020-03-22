@@ -7,7 +7,8 @@
   "long_description": "${read_file[README.md]}",
   "long_description_content_type": "text/markdown",
   "url": "https://github.com/hmiladhia/DPipe",
-  "packages": ["configDmanager>=0.1.8", "Dmail>=0.1.0"],
+  "packages": ["DPipe"],
+  "install_requires": ["configDmanager>=0.1.8", "Dmail>=0.1.0"],
   "classifiers": [ 
     "Programming Language :: Python :: 3", 
     "License :: OSI Approved :: MIT License", 
