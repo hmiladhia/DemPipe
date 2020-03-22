@@ -1,4 +1,4 @@
-from DemPipe.action import Action, Trigger, SequentialPipe
+from DemPipe.action import Action, Trigger, SequentialPipe, ContextSetter, Procedure
 from DemPipe.executor import PipeExecutorBase, PipeExecutor
 
 
