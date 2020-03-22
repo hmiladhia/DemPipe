@@ -1,6 +1,6 @@
 import pytest
 
-from DemPipe import PipeExecutorBase, Action, ContextSetter, Procedure
+from DemPipe import PipeExecutorBase, Action, ContextSetter, Procedure, ParallelPipe
 
 
 @pytest.fixture(scope='session', autouse=True)
@@ -32,3 +32,17 @@ def test_action_as_procedure(pipe):
                Action(lambda x: x**2, ctx_in='last_value', ctx_out=None),
                Action(lambda x: x + 2, ctx_in='last_value')]
     assert pipe.execute(actions) == 5
+
+
+def test_parallel_pipe(pipe):
+    import time
+
+    def do_something(sec):
+        time.sleep(sec)
+        return sec
+
+    actions = ParallelPipe(Action(do_something, 0.2),
+                           Action(do_something, 0.5),
+                           Action(do_something, 0.3),
+                           Action(do_something, 0.2))
+    assert pipe.execute(actions) == [0.2, 0.5, 0.3, 0.2]
