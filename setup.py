@@ -9,4 +9,4 @@ conf = import_config('PackageConfigs.VersionConfig')
 
 setuptools.setup(**conf)
 
-update_config(lambda c: {'__version.__patch': c['__version.__patch'] + 1*not(test)}, 'PackageConfigs.VersionConfig')
+update_config(lambda c: {'__version.__patch': c['__version.__patch'] + 1 * (not test)}, 'PackageConfigs.VersionConfig')
