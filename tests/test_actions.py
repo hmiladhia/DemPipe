@@ -25,3 +25,10 @@ def test_procedure(pipe):
                Procedure(lambda x: x**2, ctx_in='last_value'),
                Action(lambda x: x + 2, ctx_in='last_value')]
     assert pipe.execute(actions) == 5
+
+
+def test_action_as_procedure(pipe):
+    actions = [ContextSetter(last_value=3),
+               Action(lambda x: x**2, ctx_in='last_value', ctx_out=None),
+               Action(lambda x: x + 2, ctx_in='last_value')]
+    assert pipe.execute(actions) == 5

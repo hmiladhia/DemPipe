@@ -2,4 +2,4 @@ from DemPipe.action import Action, Trigger, SequentialPipe, ContextSetter, Proce
 from DemPipe.executor import PipeExecutorBase, PipeExecutor
 
 
-__version__ = '0.0.2'
+__version__ = '0.0.3'
