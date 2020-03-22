@@ -9,8 +9,8 @@ class Trigger(Action):
         self.true_action = true_action
         self.false_action = false_action
 
-    def _execute(self, *args, local_session=None, **kwargs):
-        if super(Trigger, self)._execute(*args, local_session=local_session, **kwargs):
-            return self.true_action(local_session=local_session)
+    def _execute(self, *args, loc_ctx=None, **kwargs):
+        if super(Trigger, self)._execute(*args, loc_ctx=loc_ctx, **kwargs):
+            return self.true_action(loc_ctx=loc_ctx)
         elif self.false_action:
-            return self.false_action(local_session=local_session)
+            return self.false_action(loc_ctx=loc_ctx)

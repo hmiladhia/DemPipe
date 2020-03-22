@@ -25,7 +25,7 @@ class PipeExecutorBase:
     def execute_action(self, action, *args, **kwargs):
         if not isinstance(action, ActionBase):
             action = ActionBase.parse_action(action, *args, **kwargs)
-        return action(*args, local_session=self.context, **kwargs)
+        return action(*args, loc_ctx=self.context, **kwargs)
 
     def execute(self, *args):
         pipe = SequentialPipe(*args, handler=self.handler)

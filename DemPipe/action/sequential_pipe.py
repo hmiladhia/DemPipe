@@ -11,13 +11,13 @@ class SequentialPipe(ActionBase):
             else:
                 self.actions.append(arg)
 
-    def _execute(self, *args, local_session=None, **kwargs):
+    def _execute(self, *args, loc_ctx=None, **kwargs):
         ret = None
         action: ActionBase
         for action in self.actions:
             if not isinstance(action, ActionBase):
                 action = ActionBase.parse_action(action)
-            ret = action(local_session=local_session)
+            ret = action(loc_ctx=loc_ctx)
         return ret
 
     @staticmethod

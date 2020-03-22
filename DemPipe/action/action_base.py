@@ -10,13 +10,13 @@ class ActionBase(ABC):
         self.action_name = self.__class__.__name__
         self._handler = handler
 
-    def __call__(self, *args, local_session=None, **kwargs):
+    def __call__(self, *args, loc_ctx=None, **kwargs):
         try:
-            return self._execute(*args, local_session=local_session, **kwargs)
+            return self._execute(*args, loc_ctx=loc_ctx, **kwargs)
         except Exception as e:
             self.handler(e, *args, **kwargs)
 
-    def _execute(self, *args, local_session, **kwargs):
+    def _execute(self, *args, loc_ctx, **kwargs):
         raise NotImplementedError('You need to overide this method')
 
     def __str__(self):

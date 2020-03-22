@@ -5,10 +5,10 @@ class Action(Procedure):
     def __init__(self, action, *args, ctx_in=None, ctx_out='last_value', handler=None, **kwargs):
         super(Action, self).__init__(action, *args, ctx_in=ctx_in, ctx_out=ctx_out, handler=handler, **kwargs)
 
-    def _execute(self, *args, local_session, **kwargs):
-        result = super(Action, self)._execute(*args, local_session=local_session, **kwargs)
+    def _execute(self, *args, loc_ctx, **kwargs):
+        result = super(Action, self)._execute(*args, loc_ctx=loc_ctx, **kwargs)
         if isinstance(self.ctx_out, str):
-            local_session.update({self.ctx_out: result})
+            loc_ctx.update({self.ctx_out: result})
         return result
 
     @staticmethod
