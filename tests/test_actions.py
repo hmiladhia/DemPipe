@@ -36,13 +36,10 @@ def test_action_as_procedure(pipe):
 
 def test_parallel_pipe(pipe):
     import time
-
-    def do_something(sec):
-        time.sleep(sec)
-        return sec
-
-    actions = ParallelPipe(Action(do_something, 0.2),
-                           Action(do_something, 0.5),
-                           Action(do_something, 0.3),
-                           Action(do_something, 0.2))
+    t0 = time.time()
+    actions = ParallelPipe(Action(lambda sec: time.sleep(sec) or sec, 0.2),
+                           Action(lambda sec: time.sleep(sec) or sec, 0.5),
+                           Action(lambda sec: time.sleep(sec) or sec, 0.3),
+                           Action(lambda sec: time.sleep(sec) or sec, 0.2))
     assert pipe.execute(actions) == [0.2, 0.5, 0.3, 0.2]
+    assert 0.5 <= time.time()-t0 <= 0.52
