@@ -62,3 +62,28 @@ from DemPipe import PipeExecutor, Action
 with PipeExecutor(config_file='ConfigsFolder.MyConfig') as pipe:
     pipe.execute(Action(lambda x: x/0, 2))  # raises ZeroDivisionException
 ```
+
+## Other Types of actions
+
+In addition to Trigger and Action there exist other kinds of actions :
+
+- **ContextSetter**: Makes it easier to set context values :
+
+  ```python
+  actions = [ContextSetter(var1=5, var2="test string"),
+             Action(lambda x: x**2, ctx_in='var1')]
+  print(pipe.execute(actions))  # 25
+  
+  actions = [ContextSetter(lambda c: {'var1': c['var2'] * 3}, var2=4), 
+             Action(lambda x: x**2, ctx_in='variable1')]
+  print(pipe.execute(actions))  # 144
+  ```
+
+- **Procedure**: Same as an action but doesn't update the current context with its return value :
+
+  ```python
+  actions = [ContextSetter(last_value=3),
+             Procedure(lambda x: x**2, ctx_in='last_value'),
+             Action(lambda x: x + 2, ctx_in='last_value')]
+  print(pipe.execute(actions))  # 5
+  ```

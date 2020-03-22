@@ -10,7 +10,7 @@ def pipe():
 
 
 def test_context_setter(pipe):
-    actions = [ContextSetter(variable1=5, variable2="love"), Action(lambda x: x**2, ctx_in='variable1')]
+    actions = [ContextSetter(variable1=5, variable2="test string"), Action(lambda x: x**2, ctx_in='variable1')]
     assert pipe.execute(actions) == 25
 
 
