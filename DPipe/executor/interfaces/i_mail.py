@@ -1,7 +1,7 @@
 from Dmail import Email
 from configDmanager import Config
 
-from DumbPipe.executor.interfaces import IConfig
+from DPipe.executor.interfaces import IConfig
 
 
 class IMail(IConfig):

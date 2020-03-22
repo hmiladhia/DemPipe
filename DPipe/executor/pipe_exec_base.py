@@ -1,19 +1,19 @@
-from DumbPipe.context import PipeContext
-from DumbPipe.action import SequentialPipe, ActionBase
+from DPipe.context import PipeContext
+from DPipe.action import SequentialPipe, ActionBase
 
 
 class PipeExecutorBase:
     def __init__(self):
-        self.session = PipeContext()
+        self.context = PipeContext()
 
     def __enter__(self):
         self.start()
-        self.session.start()
+        self.context.start()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.quit(exc_type, exc_val, exc_tb)
-        self.session.quit()
+        self.context.quit()
 
     # Actions
     def start(self):
@@ -25,7 +25,7 @@ class PipeExecutorBase:
     def execute_action(self, action, *args, **kwargs):
         if not isinstance(action, ActionBase):
             action = ActionBase.parse_action(action, *args, **kwargs)
-        return action(*args, local_session=self.session, **kwargs)
+        return action(*args, local_session=self.context, **kwargs)
 
     def execute(self, *args):
         pipe = SequentialPipe(*args, handler=self.handler)

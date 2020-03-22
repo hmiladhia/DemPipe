@@ -1,6 +1,6 @@
 from plyer import notification
 
-from DumbPipe.executor.interfaces import IConfig
+from DPipe.executor.interfaces import IConfig
 
 
 class INotify(IConfig):

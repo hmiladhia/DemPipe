@@ -4,7 +4,7 @@ import pytest
 
 from configDmanager.errors import ConfigNotFoundError
 
-from DumbPipe import PipeExecutor
+from DPipe import PipeExecutor
 
 
 @pytest.fixture(scope='session', autouse=True)

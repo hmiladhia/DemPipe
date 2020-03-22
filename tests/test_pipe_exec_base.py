@@ -1,6 +1,6 @@
 import pytest
 
-from DumbPipe import PipeExecutorBase, Action, Trigger, SequentialPipe
+from DPipe import PipeExecutorBase, Action, Trigger, SequentialPipe
 
 
 @pytest.fixture(scope='session', autouse=True)

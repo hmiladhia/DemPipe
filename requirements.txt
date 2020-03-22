@@ -1,9 +1,5 @@
-configDmanager
-PIL
-imagehash
-plyer
+configDmanager>=0.1.8
 Dmail
+plyer
 pytest
 pytest-mock
-selenium==3.141.0
-urllib3==1.25.8
