@@ -7,8 +7,9 @@
   "long_description": "${read_file[README.md]}",
   "long_description_content_type": "text/markdown",
   "url": "https://github.com/hmiladhia/DemPipe",
-  "packages": ["DemPipe"],
+  "packages": ["DemPipe", "DemPipe.action", "DemPipe.executor", "DemPipe.executor.interfaces"],
   "install_requires": ["configDmanager>=0.1.8", "Dmail>=0.1.0"],
+  "include_package_data": true,
   "classifiers": [ 
     "Programming Language :: Python :: 3", 
     "License :: OSI Approved :: MIT License", 
