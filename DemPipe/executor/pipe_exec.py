@@ -1,14 +1,14 @@
 import traceback
 
 from DemPipe.executor import PipeExecutorBase
-from DemPipe.executor.interfaces import IMail, INotify
+from DemPipe.executor.mixin import EmailMixin, PushNotificationMixin
 
 
-class PipeExecutor(PipeExecutorBase, IMail, INotify):
+class PipeExecutor(PipeExecutorBase, EmailMixin, PushNotificationMixin):
     def __init__(self, config_file=r'DemPipe.PipeConfig'):
         super(PipeExecutor, self).__init__()
-        IMail.__init__(self, config_file)
-        INotify.__init__(self, config_file)
+        EmailMixin.__init__(self, config_file)
+        PushNotificationMixin.__init__(self, config_file)
 
     # Actions
     def quit(self, exc_type, exc_val, exc_tb):

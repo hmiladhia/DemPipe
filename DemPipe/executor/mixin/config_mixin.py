@@ -1,7 +1,7 @@
 from configDmanager import import_config, Config
 
 
-class IConfig:
+class ConfigMixin:
     pipe_name: str
 
     def __init__(self, config_file=None):

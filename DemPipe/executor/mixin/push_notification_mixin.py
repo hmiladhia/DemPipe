@@ -1,11 +1,11 @@
 from plyer import notification
 
-from DemPipe.executor.interfaces import IConfig
+from DemPipe.executor.mixin import ConfigMixin
 
 
-class INotify(IConfig):
+class PushNotificationMixin(ConfigMixin):
     def __init__(self, config_file=None):
-        super(INotify, self).__init__(config_file)
+        super(PushNotificationMixin, self).__init__(config_file)
 
     def notify(self, message, title=None, app_icon="", timeout=10):
         notification.notify(

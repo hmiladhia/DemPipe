@@ -1,10 +1,10 @@
 from Dmail import Email
 from configDmanager import Config
 
-from DemPipe.executor.interfaces import IConfig
+from DemPipe.executor.mixin import ConfigMixin
 
 
-class IMail(IConfig):
+class EmailMixin(ConfigMixin):
     def __init__(self, config_file=None):
         self.mail_server = None
         self.mail_port = None
@@ -12,14 +12,14 @@ class IMail(IConfig):
         self.mail_password = None
         self.mail_use_tls = True
         self.mail_default_receiver = None
-        super(IMail, self).__init__(config_file)
+        super(EmailMixin, self).__init__(config_file)
 
     def load_config(self, config):
-        super(IMail, self).load_config(config)
+        super(EmailMixin, self).load_config(config)
         self.set_mail_params(**config.mail)
 
     def set_default_config(self, config):
-        super(IMail, self).set_default_config(config)
+        super(EmailMixin, self).set_default_config(config)
         config.mail = Config(dict())
 
     def set_mail_params(self, mail_server=None, mail_port=None, mail_user=None, mail_password=None,
