@@ -14,6 +14,7 @@ class ParallelPipe(ActionBase, ContextOutMixin):
             else:
                 self.actions.append(arg)
 
+    @ContextOutMixin.update_context
     def _execute(self, *args, loc_ctx=None, **kwargs):
         ret = []
         results = []
@@ -26,7 +27,6 @@ class ParallelPipe(ActionBase, ContextOutMixin):
 
         for result in results:
             ret.append(result.result())
-        self._update_context(loc_ctx, ret)
         return ret
 
     @staticmethod

@@ -43,4 +43,4 @@ def test_parallel_pipe(pipe):
                            Action(lambda sec: time.sleep(sec) or sec, 0.2))
     assert pipe.execute(actions) == [0.2, 0.5, 0.3, 0.2]
     assert pipe.context.get_last_value() == [0.2, 0.5, 0.3, 0.2]
-    assert 0.5 <= time.time()-t0 <= 0.52
+    assert 0.5 <= time.time()-t0 <= 0.55

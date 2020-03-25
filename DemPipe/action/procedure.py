@@ -8,10 +8,9 @@ class Procedure(ActionBase, ContextInMixin):
         self.action = action
         self.action_name = self.action_name if self.action.__name__ == '<lambda>' else self.action.__name__
 
+    @ContextInMixin.get_args
     def _execute(self, *args, loc_ctx, **kwargs):
-        f_args, f_kwargs = self._get_f_args(*args, loc_ctx=loc_ctx, **kwargs)
-        result = self.action(*f_args, **f_kwargs)
-        return result
+        return self.action(*args, **kwargs)
 
     @staticmethod
     def _parse_action(t_action, *args, **kwargs):

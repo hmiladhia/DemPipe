@@ -6,10 +6,9 @@ class Action(Procedure, ContextOutMixin):
     def __init__(self, action, *args, ctx_in=None, ctx_out='last_value', handler=None, **kwargs):
         super(Action, self).__init__(action, *args, ctx_in=ctx_in, ctx_out=ctx_out, handler=handler, **kwargs)
 
+    @ContextOutMixin.update_context
     def _execute(self, *args, loc_ctx, **kwargs):
-        result = super(Action, self)._execute(*args, loc_ctx=loc_ctx, **kwargs)
-        self._update_context(loc_ctx, result)
-        return result
+        return super(Action, self)._execute(*args, loc_ctx=loc_ctx, **kwargs)
 
     @staticmethod
     def _parse_action(t_action, *args, **kwargs):

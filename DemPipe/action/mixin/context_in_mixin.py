@@ -1,5 +1,5 @@
 from abc import ABC
-
+from functools import wraps
 from typing import List, Dict, Any
 
 
@@ -8,7 +8,15 @@ class ContextInMixin(ABC):
     kwargs: Dict
     ctx_in: Any
 
-    def _get_f_args(self, *args, loc_ctx=None, **kwargs):
+    @staticmethod
+    def get_args(func):
+        @wraps(func)
+        def wrapper(self, *args, loc_ctx=None, **kwargs):
+            f_args, f_kwargs = self._get_final_args(*args, loc_ctx=loc_ctx, **kwargs)
+            return func(self, *f_args, loc_ctx=loc_ctx, **f_kwargs)
+        return wrapper
+
+    def _get_final_args(self, *args, loc_ctx=None, **kwargs):
         s_args, s_kwargs = self.__get_s_args(loc_ctx)
         f_args = list(args or self.args) + s_args
         f_kwargs = self.kwargs.copy()
