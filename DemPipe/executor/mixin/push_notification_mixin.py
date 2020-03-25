@@ -14,3 +14,8 @@ class PushNotificationMixin(ConfigMixin):
             app_icon=app_icon,
             timeout=timeout
         )
+
+    # Actions
+    def _quit(self, exc_type, exc_val, exc_tb):
+        if exc_type:
+            self.notify(str(exc_val), 'Error')

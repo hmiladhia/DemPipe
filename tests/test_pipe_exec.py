@@ -10,7 +10,7 @@ from DemPipe import PipeExecutor
 @pytest.fixture(scope='session', autouse=True)
 def pipe():
     with PipeExecutor() as pipe:
-        pipe.mail_subject = "Pipe Exec Testing"
+        pipe.pipe_name = "Pipe Exec Testing"
         yield pipe
 
 
@@ -35,11 +35,5 @@ def test_error(mocker, pipe):
 
     assert mocked_send_message.call_count == 1
     mocked_send_message.assert_called_with(err_msg, os.environ.get('receiver'),
-                                           '[Pipe Execution] - Failed: division by zero', cc=None, bcc=None,
+                                           '[Pipe Exec Testing] - Failed: division by zero', cc=None, bcc=None,
                                            subtype='md', attachments=None)
-
-
-def test_push_notification(mocker, pipe):
-    mocked_notify = mocker.patch('plyer.notification.notify')
-    pipe.execute((pipe.notify, ["Message", "Title"], dict(timeout=0)))
-    mocked_notify.assert_called_with(title="[Pipe Execution] - Title", message="Message", timeout=0, app_icon='')

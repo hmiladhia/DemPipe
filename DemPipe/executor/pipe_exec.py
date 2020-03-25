@@ -1,20 +1,13 @@
 import traceback
 
 from DemPipe.executor import PipeExecutorBase
-from DemPipe.executor.mixin import EmailMixin, PushNotificationMixin
+from DemPipe.executor.mixin import EmailMixin
 
 
-class PipeExecutor(PipeExecutorBase, EmailMixin, PushNotificationMixin):
+class PipeExecutor(PipeExecutorBase, EmailMixin):
     def __init__(self, config_file=r'DemPipe.PipeConfig'):
         super(PipeExecutor, self).__init__()
         EmailMixin.__init__(self, config_file)
-        PushNotificationMixin.__init__(self, config_file)
-
-    # Actions
-    def quit(self, exc_type, exc_val, exc_tb):
-        super(PipeExecutor, self).quit(exc_type, exc_val, exc_tb)
-        if exc_type:
-            self.notify(str(exc_val), 'Error')
 
     # Handler
     def _get_error_message(self, exception, tb) -> str:
