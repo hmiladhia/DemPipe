@@ -1,13 +1,11 @@
 import traceback
 
-from DemPipe.executor import PipeExecutorBase
 from DemPipe.executor.mixin import EmailMixin
 
 
-class PipeExecutor(PipeExecutorBase, EmailMixin):
+class PipeExecutor(EmailMixin):
     def __init__(self, config_file=r'DemPipe.PipeConfig'):
-        super(PipeExecutor, self).__init__()
-        EmailMixin.__init__(self, config_file)
+        super(PipeExecutor, self).__init__(config_file=config_file)
 
     # Handler
     def _get_error_message(self, exception, tb) -> str:
