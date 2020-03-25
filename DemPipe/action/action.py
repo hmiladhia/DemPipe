@@ -8,7 +8,7 @@ class Action(Procedure, ContextOutMixin):
 
     def _execute(self, *args, loc_ctx, **kwargs):
         result = super(Action, self)._execute(*args, loc_ctx=loc_ctx, **kwargs)
-        self.update_context(loc_ctx, result)
+        self._update_context(loc_ctx, result)
         return result
 
     @staticmethod

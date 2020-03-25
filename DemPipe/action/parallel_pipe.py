@@ -26,7 +26,7 @@ class ParallelPipe(ActionBase, ContextOutMixin):
 
         for result in results:
             ret.append(result.result())
-        self.update_context(loc_ctx, ret)
+        self._update_context(loc_ctx, ret)
         return ret
 
     @staticmethod
