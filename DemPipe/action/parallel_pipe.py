@@ -1,10 +1,11 @@
 import concurrent.futures
 
 from DemPipe.action import ActionBase
+from DemPipe.action.mixin import ContextOutMixin
 
 
-class ParallelPipe(ActionBase):
-    def __init__(self, *args, ctx_out=None, handler=None):
+class ParallelPipe(ActionBase, ContextOutMixin):
+    def __init__(self, *args, ctx_out='last_value', handler=None):
         super(ParallelPipe, self).__init__(*args, ctx_out=ctx_out, handler=handler)
         self.actions = []
         for arg in args:
@@ -25,7 +26,7 @@ class ParallelPipe(ActionBase):
 
         for result in results:
             ret.append(result.result())
-
+        self.update_context(loc_ctx, ret)
         return ret
 
     @staticmethod

@@ -1,14 +1,14 @@
 from DemPipe.action import Procedure
+from DemPipe.action.mixin import ContextOutMixin
 
 
-class Action(Procedure):
+class Action(Procedure, ContextOutMixin):
     def __init__(self, action, *args, ctx_in=None, ctx_out='last_value', handler=None, **kwargs):
         super(Action, self).__init__(action, *args, ctx_in=ctx_in, ctx_out=ctx_out, handler=handler, **kwargs)
 
     def _execute(self, *args, loc_ctx, **kwargs):
         result = super(Action, self)._execute(*args, loc_ctx=loc_ctx, **kwargs)
-        if isinstance(self.ctx_out, str):
-            loc_ctx.update({self.ctx_out: result})
+        self.update_context(loc_ctx, result)
         return result
 
     @staticmethod
