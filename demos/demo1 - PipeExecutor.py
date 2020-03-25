@@ -1,6 +1,6 @@
-from DemPipe import PipeExecutor, Action
+from DemPipe import SimplePipeExecutor, Action
 
-with PipeExecutor() as pipe:
+with SimplePipeExecutor() as pipe:
     actions = [Action(lambda x: x**2, 2),  # returns 4
                Action(lambda x: x+3, ctx_in='last_value', ctx_out='my_result_name'),  # returns 4+3
                Action(lambda x: x*2, ctx_in='my_result_name')  # returns 2*7

@@ -1,6 +1,6 @@
-from DemPipe import PipeExecutor, Action, Trigger
+from DemPipe import SimplePipeExecutor, Action, Trigger
 
-with PipeExecutor() as pipe:
+with SimplePipeExecutor() as pipe:
     actions = [Action(lambda x: x**2, 2),  # returns 4
                Trigger(lambda x: x == 3,   # returns False -> executes the second action
                        Action(lambda x: x+3, ctx_in='last_value'),  # ignored

@@ -1,9 +1,9 @@
 from configDmanager import import_config, Config
 
-from DemPipe.executor import PipeExecutorBase
+from DemPipe.executor import SimplePipeExecutor
 
 
-class ConfigMixin(PipeExecutorBase):
+class ConfigMixin(SimplePipeExecutor):
     pipe_name: str
 
     def __init__(self, config_file=None):

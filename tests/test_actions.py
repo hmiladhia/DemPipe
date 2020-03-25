@@ -1,11 +1,11 @@
 import pytest
 
-from DemPipe import PipeExecutorBase, Action, ContextSetter, Procedure, ParallelPipe
+from DemPipe import SimplePipeExecutor, Action, ContextSetter, Procedure, ParallelPipe
 
 
 @pytest.fixture(scope='session', autouse=True)
 def pipe():
-    with PipeExecutorBase() as pipe:
+    with SimplePipeExecutor() as pipe:
         yield pipe
 
 

@@ -70,30 +70,30 @@ In addition to Trigger and Action there exist other kinds of actions :
 - **ContextSetter**: Makes it easier to set context values :
 
 ```python
-from DemPipe import PipeExecutorBase, Action, ContextSetter
+from DemPipe import SimplePipeExecutor, Action, ContextSetter
 
 actions = [ContextSetter(var1=5, var2="test string"),
            Action(lambda x: x ** 2, ctx_in='var1')]
-with PipeExecutorBase() as pipe:
+with SimplePipeExecutor() as pipe:
     print(pipe.execute(actions))  # 25
 
 actions = [ContextSetter(lambda c: {'var1': c['var2'] * 3}, var2=4),
            Action(lambda x: x ** 2, ctx_in='var1')]
 
-with PipeExecutorBase() as pipe:
+with SimplePipeExecutor() as pipe:
     print(pipe.execute(actions))  # 144
 ```
 
 - **Procedure**: Same as an action but doesn't update the current context with its return value :
 
 ```python
-from DemPipe import PipeExecutorBase, Action, Procedure, ContextSetter
+from DemPipe import SimplePipeExecutor, Action, Procedure, ContextSetter
 
 actions = [ContextSetter(last_value=3),
            Procedure(lambda x: x**2, ctx_in='last_value'),
            Action(lambda x: x + 2, ctx_in='last_value')]
 
-with PipeExecutorBase() as pipe:
+with SimplePipeExecutor() as pipe:
     print(pipe.execute(actions))  # 5
 
 ```

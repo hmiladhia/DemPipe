@@ -2,7 +2,7 @@ from DemPipe.context import PipeContext
 from DemPipe.action import SequentialPipe, ActionBase
 
 
-class PipeExecutorBase:
+class SimplePipeExecutor:
     def __init__(self):
         self.context = PipeContext()
 
