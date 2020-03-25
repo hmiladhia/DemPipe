@@ -5,4 +5,4 @@ actions = [ContextSetter(last_value=3),
            Action(lambda x: x + 2, ctx_in='last_value')]
 
 with SimplePipeExecutor() as pipe:
-    print(pipe.execute(actions))  # 5
+    print('result:', pipe.execute(actions))  # 5
