@@ -8,7 +8,7 @@
   "long_description_content_type": "text/markdown",
   "url": "https://github.com/hmiladhia/DemPipe",
   "packages": ["DemPipe", "DemPipe.action", "DemPipe.executor", "DemPipe.executor.mixin", "DemPipe.action.mixin"],
-  "install_requires": ["configDmanager>=0.1.8", "Dmail>=0.1.0"],
+  "install_requires": ["configDmanager>=0.1.8", "Dmail>=1.2.3"],
   "include_package_data": true,
   "extras_require": {
         "Notification":  ["plyer"]

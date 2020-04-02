@@ -1,5 +1,5 @@
 configDmanager>=0.2.0
-Dmail
+Dmail>=1.2.3
 plyer
 pytest
 pytest-mock

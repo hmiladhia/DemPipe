@@ -35,8 +35,8 @@ class EmailMixin(ConfigMixin):
         return self.mail_server and self.mail_port and self.mail_user and self.mail_password
 
     # Actions
-    def send_mail(self, message, receiver_email, subject=None, cc=None, bcc=None, subtype='md', attachments=None):
+    def send_mail(self, message, receiver_email, subject=None, cc=None, bcc=None, subtype=None, attachments=None):
         if self.mail_is_configured():
             with Email(self.mail_server, self.mail_port, self.mail_user, self.mail_password, self.mail_use_tls) as email:
-                email.send_message(message, receiver_email, self.get_title(subject), cc=cc, bcc=bcc,
-                                   subtype=subtype, attachments=attachments)
+                email.send(message, receiver_email, self.get_title(subject), cc=cc, bcc=bcc, subtype=subtype,
+                           attachments=attachments)

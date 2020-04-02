@@ -9,7 +9,7 @@ class PipeExecutor(EmailMixin):
 
     # Handler
     def _get_error_message(self, exception, tb) -> str:
-        return "# Traceback\n" + '\n\n'.join(map(lambda x: f'<span style="color: red;">{x}</span>', tb.split('\n')))
+        return '\n'.join(['# Traceback', '```pytb', tb, '```'])
 
     def _get_error_subject(self, exception) -> str:
         return f'Failed: {exception}'
